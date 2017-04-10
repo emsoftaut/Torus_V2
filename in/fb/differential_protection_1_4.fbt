@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="DC81CAEB2D08ACD7" Name="differential_protection_1_4" Comment="Composite Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="9" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="3/23/2016" Remarks="template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="pickup_current1" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request">
+        <With Var="current3" />
+        <With Var="current4" />
+      </Event>
+      <Event Name="RESET" />
+      <Event Name="CLEAR" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm" />
+      <Event Name="CNF" Comment="Execution Confirmation">
+        <With Var="trip1" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="pickup_current1" Type="REAL" />
+      <VarDeclaration Name="current3" Type="REAL" />
+      <VarDeclaration Name="current4" Type="REAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="trip1" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB ID="9" Name="FB3" Type="differential_protection_4" x="1360" y="1520" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <Input Name="INIT">
+      <Position>
+        <X>209.999969</X>
+        <Y>392.9635</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="REQ">
+      <Position>
+        <X>194.999969</X>
+        <Y>422.9635</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="RESET">
+      <Position>
+        <X>180</X>
+        <Y>452.9635</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="pickup_current1">
+      <Position>
+        <X>130</X>
+        <Y>517.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="current3">
+      <Position>
+        <X>125</X>
+        <Y>547.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="current4">
+      <Position>
+        <X>115</X>
+        <Y>577.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="CLEAR">
+      <Position>
+        <X>159.999969</X>
+        <Y>477.9635</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Output Name="INITO">
+      <Position>
+        <X>625</X>
+        <Y>382.963531</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="CNF">
+      <Position>
+        <X>635</X>
+        <Y>402.963531</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="trip1">
+      <Position>
+        <X>650.802063</X>
+        <Y>507.963531</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Output>
+    <EventConnections>
+      <Connection Source="FB3.INITO" Destination="INITO" dx1="46.6875" />
+      <Connection Source="FB3.CNF" Destination="CNF" dx1="46.6875" />
+      <Connection Source="INIT" Destination="FB3.INIT" dx1="40.8335" />
+      <Connection Source="REQ" Destination="FB3.REQ" dx1="48.9585" />
+      <Connection Source="RESET" Destination="FB3.RESET" dx1="40" />
+      <Connection Source="CLEAR" Destination="FB3.CLEAR" dx1="79.14594" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="FB3.trip" Destination="trip1" dx1="46.6875" />
+      <Connection Source="pickup_current1" Destination="FB3.pickup_current" dx1="43.12512" />
+      <Connection Source="current3" Destination="FB3.current1" dx1="150.2501" />
+      <Connection Source="current4" Destination="FB3.current2" dx1="40" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

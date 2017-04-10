@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType Name="earth_fault_3" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="3/23/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="QI" />
+        <With Var="pickup_voltage" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request">
+        <With Var="QI" />
+        <With Var="pickup_voltage" />
+        <With Var="voltage" />
+      </Event>
+      <Event Name="RESET" />
+      <Event Name="TIME_UP_2" />
+      <Event Name="CLEAR" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm">
+        <With Var="QO" />
+        <With Var="trip" />
+      </Event>
+      <Event Name="CNF" Comment="Execution Confirmation">
+        <With Var="QO" />
+        <With Var="trip" />
+      </Event>
+      <Event Name="START_TIMER_2" />
+      <Event Name="RESET_OUT">
+        <With Var="trip" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="QI" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="pickup_voltage" Type="INT" />
+      <VarDeclaration Name="voltage" Type="REAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="QO" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="trip" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="fault" Type="BOOL" />
+      <VarDeclaration Name="time2" Type="BOOL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="INIT" Comment="Initialization" x="923.5294" y="141.1765">
+        <ECAction Algorithm="INIT" Output="INITO" />
+      </ECState>
+      <ECState Name="STATE1" x="1212" y="880.0001" />
+      <ECState Name="STATE2" x="1368" y="320.0001">
+        <ECAction Algorithm="REQ" Output="CNF" />
+        <ECAction Output="START_TIMER_2" />
+      </ECState>
+      <ECState Name="STATE3" x="1032" y="1852">
+        <ECAction Algorithm="RESET" Output="RESET_OUT" />
+      </ECState>
+      <ECState Name="STATE5" x="603.9999" y="2056">
+        <ECAction Algorithm="RESET" Output="RESET_OUT" />
+      </ECState>
+      <ECState Name="STATE6" x="1508" y="1548">
+        <ECAction Algorithm="time2_up" />
+      </ECState>
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="731.1476" y="204.8375" />
+      <ECTransition Source="INIT" Destination="START" Condition="1" x="797.5924" y="348.3232" />
+      <ECTransition Source="START" Destination="STATE1" Condition="REQ AND (voltage &gt; pickup_voltage)" x="846.8683" y="765.7103">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="135,225,284.4678,176.3559" />
+      </ECTransition>
+      <ECTransition Source="STATE1" Destination="STATE3" Condition="(REQ AND (voltage &lt; pickup_voltage)) OR (REQ AND (voltage = pickup_voltage))" x="900.9282" y="1328.349">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="216.9919,292.5799,204.1905,365.3196" />
+      </ECTransition>
+      <ECTransition Source="STATE5" Destination="START" Condition="1" x="80.27085" y="1081.97">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="-10.50511,320.9063,-20.66566,193.2895" />
+      </ECTransition>
+      <ECTransition Source="START" Destination="STATE5" Condition="RESET" x="338.7013" y="1177.536">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="64.45908,225.3541,69.86274,352.5523" />
+      </ECTransition>
+      <ECTransition Source="STATE3" Destination="START" Condition="1" x="463.5096" y="1266.526">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="112.6908,382.4179,73.72949,271.8152" />
+      </ECTransition>
+      <ECTransition Source="STATE2" Destination="STATE1" Condition="1" x="1360.726" y="588.912">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="349.5726,127.1716,339.0734,165.4364" />
+      </ECTransition>
+      <ECTransition Source="STATE1" Destination="STATE3" Condition="time2" x="1201.889" y="1377.182">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="312.4341,309.0716,299.1851,381.3831" />
+      </ECTransition>
+      <ECTransition Source="STATE1" Destination="STATE2" Condition="1" x="1080.388" y="544.5538">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="257.8803,150.517,261.0352,112.5188" />
+      </ECTransition>
+      <ECTransition Source="STATE6" Destination="STATE1" Condition="1" x="1314.508" y="1259.784">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="336.6859,342.2578,316.0462,295.2652" />
+      </ECTransition>
+      <ECTransition Source="STATE1" Destination="STATE6" Condition="TIME_UP_2" x="1443.205" y="1183.877">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="355.149,269.9631,375.7705,316.9548" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="INIT" Comment="Initialization algorithm">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;trip := FALSE;&#xD;&#xA;fault := FALSE;&#xD;&#xA;time2 := FALSE;" />
+    </Algorithm>
+    <Algorithm Name="REQ" Comment="Normally executed algorithm">
+      <ST Text=";&#xD;&#xA;trip := TRUE;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="RESET">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;trip := FALSE;&#xD;&#xA;fault := FALSE;&#xD;&#xA;time2 := FALSE;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="REQ2">
+      <ST Text=";&#xD;&#xA;fault := TRUE;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="time2_up">
+      <ST Text=";&#xD;&#xA;time2 := TRUE;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

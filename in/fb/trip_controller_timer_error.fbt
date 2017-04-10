@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="9753A98618F6A3ED" Name="trip_controller_timer_error" Comment="Composite Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="8" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="11/29/2016" Remarks="template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request" />
+      <Event Name="trip_overcurrent" Comment="Normal Execution Request">
+        <With Var="time" />
+      </Event>
+      <Event Name="trip_earth" Comment="Normal Execution Request" />
+      <Event Name="stop_trip_timer">
+        <With Var="time" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm" />
+      <Event Name="Trip" Comment="Execution Confirmation">
+        <With Var="Operate" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="time" Type="REAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="Operate" Type="BOOL" Comment="Current Output State" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB ID="3" Name="FB3" Type="Timer_TON" x="1960" y="560" Namespace="Main" />
+    <FB ID="4" Name="FB4" Type="Timer_TON" x="4020" y="760" Namespace="Main">
+      <Parameter Name="time" Value="0.005" />
+    </FB>
+    <FB ID="5" Name="FB5" Type="NOTRIP" x="4840" y="780" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="2" Name="FB2" Type="trip_pulse_timer" x="1180" y="1380" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="6" Name="FB6" Type="TRIP" x="3300" y="780" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="7" Name="FB8" Type="E_MERGE" x="2660" y="780" Namespace="IEC61499.Standard" />
+    <FB ID="8" Name="FB7" Type="E_SR" x="4520" y="1600" Namespace="IEC61499.Standard" />
+    <FB ID="1" Name="FB1" Type="trip_timer" x="1080" y="480" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <Input Name="INIT">
+      <Position>
+        <X>105</X>
+        <Y>137.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="trip_overcurrent">
+      <Position>
+        <X>61.4869843</X>
+        <Y>177.963531</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="trip_earth">
+      <Position>
+        <X>85</X>
+        <Y>367.963562</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="time">
+      <Position>
+        <X>76.98959</X>
+        <Y>242.963547</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="stop_trip_timer">
+      <Position>
+        <X>38.63803</X>
+        <Y>202.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Output Name="INITO">
+      <Position>
+        <X>455</X>
+        <Y>342.963531</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="Trip">
+      <Position>
+        <X>1240</X>
+        <Y>417.963562</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="Operate">
+      <Position>
+        <X>1280</X>
+        <Y>467.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Output>
+    <EventConnections>
+      <Connection Source="INIT" Destination="FB1.INIT" dx1="40.83337" />
+      <Connection Source="FB1.trip_timer_start" Destination="FB3.NewTime" dx1="43.04175" />
+      <Connection Source="FB1.stop_timer" Destination="FB3.STOP" dx1="43.04175" />
+      <Connection Source="FB3.CNF" Destination="FB1.tripTimer_Q" dx1="24.625" dx2="70" dy="-188">
+        <AvoidsNodes>false</AvoidsNodes>
+      </Connection>
+      <Connection Source="FB4.CNF" Destination="FB5.REQ" dx1="40" />
+      <Connection Source="FB1.trip_out" Destination="FB8.EI1">
+        <Points>
+          <Points>
+            <X>446.739563</X>
+            <Y>144.5</Y>
+          </Points>
+          <Points>
+            <X>472.5</X>
+            <Y>144.5</Y>
+          </Points>
+          <Points>
+            <X>472.5</X>
+            <Y>122.5</Y>
+          </Points>
+          <Points>
+            <X>650</X>
+            <Y>122.5</Y>
+          </Points>
+          <Points>
+            <X>650</X>
+            <Y>204.5</Y>
+          </Points>
+          <Points>
+            <X>660</X>
+            <Y>204.5</Y>
+          </Points>
+        </Points>
+        <AvoidsNodes>false</AvoidsNodes>
+      </Connection>
+      <Connection Source="FB2.trip_out" Destination="FB8.EI2" dx1="887.7292">
+        <AvoidsNodes>false</AvoidsNodes>
+      </Connection>
+      <Connection Source="FB8.EO" Destination="FB6.REQ" dx1="41.5415" />
+      <Connection Source="FB6.CNF" Destination="FB4.START" dx1="40" />
+      <Connection Source="trip_overcurrent" Destination="FB1.trip" dx1="40" />
+      <Connection Source="trip_earth" Destination="FB2.trip" dx1="41.10419" />
+      <Connection Source="INIT" Destination="FB2.INIT" dx1="40.83337" />
+      <Connection Source="FB2.INITO" Destination="INITO" dx1="50" />
+      <Connection Source="FB6.CNF" Destination="FB7.S" dx1="40" />
+      <Connection Source="FB5.CNF" Destination="FB7.R" dx1="40" dx2="70" dy="392" />
+      <Connection Source="FB7.EO" Destination="Trip" dx1="48.35449" />
+      <Connection Source="stop_trip_timer" Destination="FB1.stop_trip_timer" dx1="84.55206" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="FB1.time_out" Destination="FB3.time" dx1="110" />
+      <Connection Source="time" Destination="FB1.time" dx1="40" />
+      <Connection Source="FB7.Q" Destination="Operate" dx1="48.35449" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

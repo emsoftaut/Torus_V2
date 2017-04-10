@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="84F77399DF5C33E1" Name="differential_protection_1" Comment="Composite Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="4" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="3/23/2016" Remarks="template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="DT1" />
+        <With Var="DT2" />
+        <With Var="pickup_current" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request">
+        <With Var="current1" />
+        <With Var="current2" />
+      </Event>
+      <Event Name="RESET" />
+      <Event Name="CLEAR" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm">
+        <With Var="trip" />
+      </Event>
+      <Event Name="CNF" Comment="Execution Confirmation">
+        <With Var="trip" />
+      </Event>
+      <Event Name="RESET_OUT">
+        <With Var="trip" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="current1" Type="REAL" />
+      <VarDeclaration Name="current2" Type="REAL" />
+      <VarDeclaration Name="pickup_current" Type="INT" />
+      <VarDeclaration Name="DT1" Type="TIME" Comment="Delay Time" />
+      <VarDeclaration Name="DT2" Type="TIME" Comment="Delay Time" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="trip" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB ID="2" Name="FB2" Type="E_DELAY" x="3220" y="500" Namespace="IEC61499.Standard" />
+    <FB ID="3" Name="FB3" Type="E_DELAY" x="3260" y="1080" Namespace="IEC61499.Standard" />
+    <FB ID="4" Name="FB1" Type="differential_protection" x="1520" y="520" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <Input Name="INIT">
+      <Position>
+        <X>248.854156</X>
+        <Y>132.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="REQ">
+      <Position>
+        <X>232.369812</X>
+        <Y>162.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="RESET">
+      <Position>
+        <X>221.145844</X>
+        <Y>192.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="DT1">
+      <Position>
+        <X>670</X>
+        <Y>362.963531</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="DT2">
+      <Position>
+        <X>671.1797</X>
+        <Y>337.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="pickup_current">
+      <Position>
+        <X>167.447937</X>
+        <Y>257.963531</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="current1">
+      <Position>
+        <X>162.53125</X>
+        <Y>287.963531</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="current2">
+      <Position>
+        <X>152.53125</X>
+        <Y>317.963531</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="CLEAR">
+      <Position>
+        <X>201.14325</X>
+        <Y>217.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Output Name="INITO">
+      <Position>
+        <X>704.70575</X>
+        <Y>72.96354</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="CNF">
+      <Position>
+        <X>712.9661</X>
+        <Y>92.96354</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="trip">
+      <Position>
+        <X>678.76825</X>
+        <Y>232.963547</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Output>
+    <Output Name="RESET_OUT">
+      <Position>
+        <X>786.9453</X>
+        <Y>82.96354</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <EventConnections>
+      <Connection Source="INIT" Destination="FB1.INIT" dx1="45.41663" />
+      <Connection Source="FB1.INITO" Destination="INITO" dx1="40" />
+      <Connection Source="FB1.CNF" Destination="CNF" dx1="70" />
+      <Connection Source="REQ" Destination="FB1.REQ" dx1="40" />
+      <Connection Source="RESET" Destination="FB1.RESET" dx1="40" />
+      <Connection Source="FB1.START_TIMER" Destination="FB2.START" dx1="90" />
+      <Connection Source="FB1.RESET_OUT" Destination="FB2.STOP" dx1="130" />
+      <Connection Source="FB1.RESET_OUT" Destination="FB3.STOP" dx1="46.68774" />
+      <Connection Source="FB1.START_TIMER_2" Destination="FB3.START" dx1="46.68774" />
+      <Connection Source="FB1.RESET_OUT" Destination="RESET_OUT" dx1="130" />
+      <Connection Source="FB2.EO" Destination="FB1.TIME_UP">
+        <Points>
+          <Points>
+            <X>890.375</X>
+            <Y>134.5</Y>
+          </Points>
+          <Points>
+            <X>902.5</X>
+            <Y>134.5</Y>
+          </Points>
+          <Points>
+            <X>902.5</X>
+            <Y>107.5</Y>
+          </Points>
+          <Points>
+            <X>792.5</X>
+            <Y>107.5</Y>
+          </Points>
+          <Points>
+            <X>792.5</X>
+            <Y>112.5</Y>
+          </Points>
+          <Points>
+            <X>347.5</X>
+            <Y>112.5</Y>
+          </Points>
+          <Points>
+            <X>347.5</X>
+            <Y>184.5</Y>
+          </Points>
+          <Points>
+            <X>375</X>
+            <Y>184.5</Y>
+          </Points>
+        </Points>
+      </Connection>
+      <Connection Source="FB3.EO" Destination="FB1.TIME_UP_2">
+        <Points>
+          <Points>
+            <X>900.375</X>
+            <Y>279.5</Y>
+          </Points>
+          <Points>
+            <X>912.5</X>
+            <Y>279.5</Y>
+          </Points>
+          <Points>
+            <X>912.5</X>
+            <Y>252.5</Y>
+          </Points>
+          <Points>
+            <X>802.5</X>
+            <Y>252.5</Y>
+          </Points>
+          <Points>
+            <X>802.5</X>
+            <Y>332.5</Y>
+          </Points>
+          <Points>
+            <X>367.5</X>
+            <Y>332.5</Y>
+          </Points>
+          <Points>
+            <X>367.5</X>
+            <Y>199.5</Y>
+          </Points>
+          <Points>
+            <X>375</X>
+            <Y>199.5</Y>
+          </Points>
+        </Points>
+      </Connection>
+      <Connection Source="CLEAR" Destination="FB1.CLEAR" dx1="40" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="DT1" Destination="FB2.DT" dx1="55.70825" />
+      <Connection Source="DT2" Destination="FB3.DT" dx1="40" />
+      <Connection Source="FB1.trip" Destination="trip" dx1="150" />
+      <Connection Source="pickup_current" Destination="FB1.pickup_current" dx1="40" />
+      <Connection Source="current1" Destination="FB1.current1" dx1="40" />
+      <Connection Source="current2" Destination="FB1.current2" dx1="40.125" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

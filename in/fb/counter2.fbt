@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="23113770C37ABC73" Name="counter2" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="5/24/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="Start">
+        <With Var="QI" />
+        <With Var="time" />
+      </Event>
+      <Event Name="Stop" />
+      <Event Name="TimeIsUp" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="debug">
+        <With Var="TimeInMicrosecond" />
+      </Event>
+      <Event Name="StartCycle">
+        <With Var="QO" />
+        <With Var="TimeInMicrosecond" />
+      </Event>
+      <Event Name="StopCycle" />
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="QI" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="time" Type="REAL" Comment="in seconds" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="QO" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="TimeInMicrosecond" Type="UDINT" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="472.9412" y="1285.412" />
+      <ECState Name="STATE2" x="1012" y="236">
+        <ECAction Algorithm="Reset" Output="debug" />
+        <ECAction Output="StopCycle" />
+      </ECState>
+      <ECState Name="STATE3" x="1424" y="1228" />
+      <ECState Name="STATE1" x="1636" y="1660">
+        <ECAction Algorithm="REQ" Output="StartCycle" />
+      </ECState>
+      <ECTransition Source="START" Destination="STATE3" Condition="1" x="867.0693" y="1286.215">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="184.6731,326.4395,236.4079,319.5155" />
+      </ECTransition>
+      <ECTransition Source="STATE3" Destination="STATE2" Condition="Stop" x="942.6915" y="838.772">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="229.609,248.1137,206.8015,189.0677" />
+      </ECTransition>
+      <ECTransition Source="STATE3" Destination="STATE2" Condition="TimeIsUp" x="1455.866" y="897.6805">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="395.0896,274.1729,363.8117,202.2808" />
+      </ECTransition>
+      <ECTransition Source="STATE3" Destination="STATE1" Condition="Start" x="1607.058" y="1410.959">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="398.2439,336.3347,411.6425,363.6377" />
+      </ECTransition>
+      <ECTransition Source="STATE1" Destination="STATE3" Condition="1" x="1523.562" y="1519">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="389.1993,399.6515,375.8007,372.3485" />
+      </ECTransition>
+      <ECTransition Source="STATE2" Destination="STATE3" Condition="1" x="1183.053" y="834.6461">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="278.9338,180.2306,309.655,254.2002" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="REQ" Comment="Normally executed algorithm">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;TimeInMicrosecond := REAL_TO_UDINT(time*1000000);&#xD;&#xA;TimeInMicrosecond := TimeInMicrosecond/2;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="Reset">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;TimeInMicrosecond := 0;&#xD;&#xA;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

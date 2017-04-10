@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="D95AA40728A51146" Name="overcurrentV2" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="Chen-Wei" Date="21/03/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="dCFG_CurveType" />
+        <With Var="rStartLevel" />
+        <With Var="rConstant_K" />
+        <With Var="rDefiniteTime" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request">
+        <With Var="rMeasuredCurrent" />
+        <With Var="rDefiniteTime" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm" />
+      <Event Name="tmrTrip" Comment="Execution Confirmation">
+        <With Var="rTimeToTrip" />
+      </Event>
+      <Event Name="tmrTrip_Stop">
+        <With Var="rTimeToTrip" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="rMeasuredCurrent" Type="REAL" Comment="Input event qualifier" />
+      <VarDeclaration Name="dCFG_CurveType" Type="INT" />
+      <VarDeclaration Name="rStartLevel" Type="REAL" />
+      <VarDeclaration Name="rConstant_K" Type="REAL" />
+      <VarDeclaration Name="rDefiniteTime" Type="REAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="rTimeToTrip" Type="REAL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="mStart" Type="BOOL" />
+      <VarDeclaration Name="rTimeToTripInternal" Type="REAL" />
+      <VarDeclaration Name="INT_dCFG_CurveType" Type="INT" />
+      <VarDeclaration Name="ans1" Type="REAL" />
+      <VarDeclaration Name="ans2" Type="REAL" />
+      <VarDeclaration Name="ans3" Type="REAL" />
+      <VarDeclaration Name="veryLargeNumber" Type="REAL" InitialValue="9999999" />
+      <VarDeclaration Name="TimerStarted" Type="BOOL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="1704.941" y="553.4117" />
+      <ECState Name="INIT" Comment="Initialization" x="2075.53" y="265.1756">
+        <ECAction Algorithm="INIT" Output="INITO" />
+      </ECState>
+      <ECState Name="noFault" x="1336" y="1652">
+        <ECAction Algorithm="RESET" />
+      </ECState>
+      <ECState Name="Fault" x="3216" y="1680">
+        <ECAction Algorithm="Calculate_Delay" />
+      </ECState>
+      <ECState Name="ResetTimer" x="1056" y="2196">
+        <ECAction Algorithm="tmrTripTimer_Stop" Output="tmrTrip_Stop" />
+      </ECState>
+      <ECState Name="STATE1" x="3350.255" y="2160">
+        <ECAction Algorithm="tripTime" Output="tmrTrip" />
+      </ECState>
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="1782.945" y="385.5333">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="430.5294,103.038,450.2299,87.71542" />
+      </ECTransition>
+      <ECTransition Source="INIT" Destination="START" Condition="1" x="1949.593" y="472.3226" />
+      <ECTransition Source="START" Destination="Fault" Condition="REQ AND ((rMeasuredCurrent &gt; rStartLevel) OR (EQ(rMeasuredCurrent,rStartLevel)))" x="2313.23" y="1026.721">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="508.845,206.6913,624.0706,291.6715" />
+      </ECTransition>
+      <ECTransition Source="START" Destination="noFault" Condition="REQ AND (rMeasuredCurrent &lt; ( rStartLevel * 0.95 ))" x="1787.854" y="1219.865">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="479.2825,272.5219,448.6003,356.9376" />
+      </ECTransition>
+      <ECTransition Source="Fault" Destination="START" Condition="EQ(rTimeToTrip,rTimeToTripInternal)&#xD;&#xA;" x="2567.538" y="846.1246">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="728.2612,225.4876,564.2612,155.4876" />
+      </ECTransition>
+      <ECTransition Source="noFault" Destination="ResetTimer" Condition="TimerStarted" x="1196.835" y="1880.81">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="309.2504,448.3287,290.4381,484.8778" />
+      </ECTransition>
+      <ECTransition Source="ResetTimer" Destination="START" Condition="1" x="963.6614" y="1250.591">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="187.7992,368.2151,234.8834,236.3946" />
+      </ECTransition>
+      <ECTransition Source="noFault" Destination="START" Condition="NOT TimerStarted" x="1306.822" y="1128.821">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="297.952,325.8224,325.824,242.9405" />
+      </ECTransition>
+      <ECTransition Source="Fault" Destination="STATE1" Condition="NE(rTimeToTrip,rTimeToTripInternal)&#xD;&#xA;" x="3363.172" y="1899.798">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="840.4802,457.6145,849.2356,488.9174" />
+      </ECTransition>
+      <ECTransition Source="STATE1" Destination="START" Condition="1" x="2394.778" y="1511.496">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="655.152,453.3659,526.9492,328.1806" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="INIT" Comment="Initialization algorithm">
+      <ST Text="&#xD;&#xA;INIT := 0;&#xD;&#xA;mStart := FALSE;&#xD;&#xA;TimerStarted := FALSE;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;INT_dCFG_CurveType := dCFG_CurveType;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;;" />
+    </Algorithm>
+    <Algorithm Name="RESET">
+      <ST Text="&#xD;&#xA;mStart := FALSE;&#xD;&#xA;rTimeToTripInternal := 0.0;&#xD;&#xA;;" />
+    </Algorithm>
+    <Algorithm Name="Calculate_Delay" Comment="&#xD;&#xA;Version:      2.01 2016-05-23 First Revision&#xD;&#xA;&#xD;&#xA;Curvtype: (dCFG_CurveType)&#xD;&#xA;&#xD;&#xA;0 : Definite time&#xD;&#xA;1: IEC Normal Inverse&#xD;&#xA;2: IEC Very Inverse&#xD;&#xA;3: IEC Extremely Inverse&#xD;&#xA;4: RI Curve&#xD;&#xA;">
+      <ST Text="(*&#xD;&#xA;VAR&#xD;&#xA;	ans1:REAL;&#xD;&#xA;	ans2:REAL;&#xD;&#xA;	ans3:REAL;&#xD;&#xA;	veryLargeNumber:REAL:= 9999999;&#xD;&#xA;END_VAR;*)&#xD;&#xA;&#xD;&#xA;mStart := TRUE;&#xD;&#xA;&#xD;&#xA;//IF mStart THEN&#xD;&#xA;	(* Calculate time to trip *)&#xD;&#xA;	CASE INT_dCFG_CurveType OF&#xD;&#xA;		1: (* IEC Normal Inverse *)&#xD;&#xA;		&#xD;&#xA;  		IF (rStartLevel = 0.0) THEN&#xD;&#xA;  			ans1 := EXPT(veryLargeNumber, 0.02);&#xD;&#xA;  		ELSE&#xD;&#xA;  			ans1 := EXPT((rMeasuredCurrent/rStartLevel) , 0.02);&#xD;&#xA;  		END_IF;&#xD;&#xA;  		&#xD;&#xA;  		IF ((ans1 - 1.0) = 0.0) THEN&#xD;&#xA;  			ans2 := veryLargeNumber;&#xD;&#xA;  		ELSE&#xD;&#xA;  			ans2 := 0.14/(ans1 - 1.0);&#xD;&#xA;  		END_IF;&#xD;&#xA;  		rTimeToTripInternal := rConstant_K*ans2;&#xD;&#xA;		&#xD;&#xA;		2: (* IEC Very Inverse *)&#xD;&#xA;		&#xD;&#xA;  		IF (rStartLevel = 0.0) THEN&#xD;&#xA;  			ans1 := veryLargeNumber - 1.0;&#xD;&#xA;  		ELSE&#xD;&#xA;  			ans1 := (rMeasuredCurrent/rStartLevel) - 1.0;&#xD;&#xA;  		END_IF;&#xD;&#xA;  		&#xD;&#xA;  		IF (ans1 = 0.0) THEN&#xD;&#xA;  			ans2 := veryLargeNumber;&#xD;&#xA;  		ELSE&#xD;&#xA;  			ans2 := 13.5/ans1;&#xD;&#xA;  		END_IF;&#xD;&#xA;  		rTimeToTripInternal := rConstant_K*ans2;&#xD;&#xA;		&#xD;&#xA;		3: (* IEC Extremely Inverse *)&#xD;&#xA;		&#xD;&#xA;  		IF (rStartLevel = 0.0) THEN&#xD;&#xA;  			ans1 := EXPT(veryLargeNumber, 2.0);&#xD;&#xA;  		ELSE&#xD;&#xA;  			ans1 := EXPT((rMeasuredCurrent/rStartLevel) , 2.0);&#xD;&#xA;  		END_IF;&#xD;&#xA;  		&#xD;&#xA;  		IF ((ans1 - 1.0) = 0.0) THEN&#xD;&#xA;  			ans2 := veryLargeNumber;&#xD;&#xA;  		ELSE&#xD;&#xA;  			ans2 := 80.0/(ans1 - 1.0);&#xD;&#xA;  		END_IF;&#xD;&#xA;  		rTimeToTripInternal := rConstant_K*ans2;&#xD;&#xA;		&#xD;&#xA;		4: (* RI Curve *)&#xD;&#xA;		&#xD;&#xA;  		IF (rStartLevel = 0.0) THEN&#xD;&#xA;  			ans1 := veryLargeNumber;&#xD;&#xA;  		ELSE&#xD;&#xA;  			ans1 := rMeasuredCurrent/rStartLevel;&#xD;&#xA;  		END_IF;&#xD;&#xA;  		&#xD;&#xA;  		IF (ans1 = 0.0) THEN&#xD;&#xA;  			ans2 := veryLargeNumber;&#xD;&#xA;  		ELSE&#xD;&#xA;  			ans2 := 0.339-(0.236/ans1);&#xD;&#xA;  		END_IF;&#xD;&#xA;  		&#xD;&#xA;  		IF (ans2 = 0.0) THEN&#xD;&#xA;  			ans3 := veryLargeNumber;&#xD;&#xA;  		ELSE&#xD;&#xA;  			ans3 := (1.0/ans2);&#xD;&#xA;  		END_IF;&#xD;&#xA;  		rTimeToTripInternal := rConstant_K*ans3;&#xD;&#xA;		&#xD;&#xA;		0: (* Definite Time *)&#xD;&#xA;		  rTimeToTripInternal := rDefiniteTime;&#xD;&#xA;	&#xD;&#xA;	ELSE&#xD;&#xA;		(* Definite Time *)&#xD;&#xA;		rTimeToTripInternal := rDefiniteTime;&#xD;&#xA;	END_CASE;&#xD;&#xA;//END_IF;&#xD;&#xA;&#xD;&#xA;//rTimeToTrip := rTimeToTripInternal;&#xD;&#xA;//TimerStarted := TRUE;&#xD;&#xA;&#xD;&#xA;//INT_dCFG_CurveType := dCFG_CurveType;&#xD;&#xA;&#xD;&#xA;;" />
+    </Algorithm>
+    <Algorithm Name="tmrTripTimer_Stop">
+      <ST Text="&#xD;&#xA;rTimeToTrip := rTimeToTripInternal;&#xD;&#xA;TimerStarted := FALSE;&#xD;&#xA;;" />
+    </Algorithm>
+    <Algorithm Name="tripTime">
+      <ST Text=";&#xD;&#xA;rTimeToTrip := rTimeToTripInternal;&#xD;&#xA;TimerStarted := TRUE;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="742175E360135A6D" Name="alternative" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="Chen-Wei" Date="24/05/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request" />
+      <Event Name="REQ" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm">
+        <With Var="out" />
+      </Event>
+    </EventOutputs>
+    <OutputVars>
+      <VarDeclaration Name="out" Type="BOOL" Comment="Output event qualifier" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="internal" Type="BOOL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="INIT" Comment="Initialization" x="923.5294" y="141.1765">
+        <ECAction Algorithm="INIT" Output="INITO" />
+      </ECState>
+      <ECState Name="REQ" Comment="Normal execution" x="1333.647" y="816.9412">
+        <ECAction Algorithm="REQ" Output="INITO" />
+      </ECState>
+      <ECState Name="STATE1" x="1473.22" y="352" />
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="731.1476" y="204.8375" />
+      <ECTransition Source="STATE1" Destination="REQ" Condition="REQ" x="1483.507" y="598.8436">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="379.7286,135.8533,371.4237,165.9641" />
+      </ECTransition>
+      <ECTransition Source="REQ" Destination="STATE1" Condition="1" x="1130.344" y="532.0394">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="266.7737,145.0411,269.627,113.6649" />
+      </ECTransition>
+      <ECTransition Source="INIT" Destination="STATE1" Condition="1" x="1105.06" y="274.7365">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="258.9717,64.66316,285.7441,74.9312" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="INIT" Comment="Initialization algorithm">
+      <ST Text="&#xD;&#xA;out := TRUE;&#xD;&#xA;internal := TRUE;&#xD;&#xA;&#xD;&#xA;;" />
+    </Algorithm>
+    <Algorithm Name="REQ" Comment="Normally executed algorithm">
+      <ST Text="&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;REQ := 0;&#xD;&#xA;&#xD;&#xA;internal := NOT internal;&#xD;&#xA;out := internal;&#xD;&#xA;&#xD;&#xA;;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

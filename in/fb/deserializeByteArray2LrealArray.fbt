@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="9569BA145313BF66" Name="deserializeByteArray2LrealArray" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="kollger" Date="19/09/2015" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="READ_ITEM">
+        <With Var="readAtIndex" />
+      </Event>
+      <Event Name="DESERIALIZE" Comment="Normal Execution Request">
+        <With Var="dataIn" />
+        <With Var="dataLen" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="ITEM_IND">
+        <With Var="itemLreal" />
+        <With Var="itemIndex" />
+        <With Var="status" />
+        <With Var="error" />
+      </Event>
+      <Event Name="DESERIALIZE_CNF" Comment="Execution Confirmation">
+        <With Var="dataOut" />
+        <With Var="count" />
+        <With Var="status" />
+        <With Var="error" />
+      </Event>
+      <Event Name="ERROR_IND">
+        <With Var="status" />
+        <With Var="error" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="readAtIndex" Type="UINT" />
+      <VarDeclaration Name="dataIn" Type="BYTE" ArraySize="802" />
+      <VarDeclaration Name="dataLen" Type="UINT" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="status" Type="STRING[32]" />
+      <VarDeclaration Name="error" Type="BOOL" />
+      <VarDeclaration Name="itemLreal" Type="LREAL" />
+      <VarDeclaration Name="itemIndex" Type="UINT" />
+      <VarDeclaration Name="dataOut" Type="LREAL" ArraySize="100" />
+      <VarDeclaration Name="count" Type="UINT" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="DESERIALIZE" Comment="Normal execution" x="1693.647" y="440.9412">
+        <ECAction Algorithm="algDeserialize" Output="DESERIALIZE_CNF" />
+      </ECState>
+      <ECState Name="READITEM" x="968.0001" y="1460">
+        <ECAction Algorithm="algReadItem" Output="ITEM_IND" />
+      </ECState>
+      <ECState Name="ERROR" x="1544" y="896.0001">
+        <ECAction Output="ERROR_IND" />
+      </ECState>
+      <ECTransition Source="START" Destination="DESERIALIZE" Condition="DESERIALIZE" x="1085.59" y="340.3605">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="237.9075,81.27057,305.0064,80.27755" />
+      </ECTransition>
+      <ECTransition Source="DESERIALIZE" Destination="START" Condition="NOT error" x="1080.306" y="519.4412">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="303.2395,134.0207,236.9135,133.3503" />
+      </ECTransition>
+      <ECTransition Source="START" Destination="READITEM" Condition="READ_ITEM" x="848.7573" y="891.5316">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="201.5435,179.7308,234.0659,257.1726" />
+      </ECTransition>
+      <ECTransition Source="READITEM" Destination="START" Condition="NOT error" x="608.2253" y="1011.137">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="160.3413,299.8234,124.3951,216.817" />
+      </ECTransition>
+      <ECTransition Source="DESERIALIZE" Destination="ERROR" Condition="error" x="1686.343" y="663.9637">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="429.9619,151.0031,420.3514,180.2276" />
+      </ECTransition>
+      <ECTransition Source="ERROR" Destination="START" Condition="1" x="1039.961" y="740.7963">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="294.1753,205.7691,230.06,175.5838" />
+      </ECTransition>
+      <ECTransition Source="READITEM" Destination="ERROR" Condition="error" x="1314.454" y="1223.888">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="311.916,328.3079,349.1491,291.284" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="algDeserialize" Comment="Normally executed algorithm">
+      <ST Text="&#xD;&#xA;VAR&#xD;&#xA;	index : UINT := 0;&#xD;&#xA;	byteindex : UINT := 0;&#xD;&#xA;  mergeLWORD : LWORD := 16#0;	&#xD;&#xA;END_VAR;&#xD;&#xA;&#xD;&#xA;IF dataLen &lt;= 802 THEN&#xD;&#xA;	&#xD;&#xA;	(* read count length *)&#xD;&#xA;	mergeLWORD := 16#0;&#xD;&#xA;	mergeLWORD := mergeLWORD OR dataIn[0];&#xD;&#xA;	mergeLWORD := SHL(mergeLWORD, 8);&#xD;&#xA;	mergeLWORD := mergeLWORD OR dataIn[1];&#xD;&#xA;	count := LWORD_TO_UINT(mergeLWORD);&#xD;&#xA;&#xD;&#xA;  IF dataLen &lt; (count * 8 + 2) THEN&#xD;&#xA;  	&#xD;&#xA;  	(* Iterate through the BYTE array and transfer it to the LREAL ARRAY *)&#xD;&#xA;  	FOR index := 0 TO count - 1 DO&#xD;&#xA;  		mergeLWORD := 16#0;&#xD;&#xA;  		byteindex := index * 8 + 2;&#xD;&#xA;  		mergeLWORD := mergeLWORD OR dataIn[byteindex];&#xD;&#xA;  		mergeLWORD := SHL(mergeLWORD, 8);&#xD;&#xA;  		mergeLWORD := mergeLWORD OR dataIn[byteindex + 1];&#xD;&#xA;  		mergeLWORD := SHL(mergeLWORD, 8);&#xD;&#xA;  		mergeLWORD := mergeLWORD OR dataIn[byteindex + 2];&#xD;&#xA;  		mergeLWORD := SHL(mergeLWORD, 8);&#xD;&#xA;  		mergeLWORD := mergeLWORD OR dataIn[byteindex + 3];&#xD;&#xA;  		mergeLWORD := SHL(mergeLWORD, 8);&#xD;&#xA;  		mergeLWORD := mergeLWORD OR dataIn[byteindex + 4];&#xD;&#xA;  		mergeLWORD := SHL(mergeLWORD, 8);&#xD;&#xA;  		mergeLWORD := mergeLWORD OR dataIn[byteindex + 5];&#xD;&#xA;  		mergeLWORD := SHL(mergeLWORD, 8);&#xD;&#xA;  		mergeLWORD := mergeLWORD OR dataIn[byteindex + 6];&#xD;&#xA;  		mergeLWORD := SHL(mergeLWORD, 8);&#xD;&#xA;  		mergeLWORD := mergeLWORD OR dataIn[byteindex + 7];&#xD;&#xA;  		dataOut[index] := DWORD_TO_LREAL(mergeLWORD);&#xD;&#xA;  	END_FOR;&#xD;&#xA;  	FOR index := index TO 99 DO&#xD;&#xA;  		dataOut[index] := 0.0;&#xD;&#xA;  	END_FOR;&#xD;&#xA;  	&#xD;&#xA;  	error := FALSE;&#xD;&#xA;  	status := STRING#'Ok';&#xD;&#xA;  	&#xD;&#xA;  ELSE&#xD;&#xA;  &#xD;&#xA;    error := TRUE;&#xD;&#xA;  	status := STRING#'dataIn invalid size';&#xD;&#xA;&#xD;&#xA;  END_IF;&#xD;&#xA;    &#xD;&#xA;ELSE&#xD;&#xA;  error := TRUE;&#xD;&#xA;  status := STRING#'dataIn to big';&#xD;&#xA;END_IF;&#xD;&#xA;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="algReadItem">
+      <ST Text="&#xD;&#xA;IF readAtIndex &lt;= count THEN&#xD;&#xA;&#xD;&#xA;  itemLreal := dataOut[readAtIndex];&#xD;&#xA;  itemIndex := readAtIndex;&#xD;&#xA;  &#xD;&#xA;  error := FALSE;&#xD;&#xA;  status := STRING#'Ok';&#xD;&#xA;ELSE&#xD;&#xA;  itemLreal := 0.0;&#xD;&#xA;  itemIndex := 0;&#xD;&#xA;  error := TRUE;&#xD;&#xA;  status := STRING#'Read out of range';&#xD;&#xA;END_IF;&#xD;&#xA;;&#xD;&#xA;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

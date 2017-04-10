@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="6A40A07694F0869E" Name="differential_protection" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="3/23/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="QI" />
+        <With Var="pickup_current" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request">
+        <With Var="QI" />
+        <With Var="pickup_current" />
+        <With Var="current1" />
+        <With Var="current2" />
+      </Event>
+      <Event Name="RESET" />
+      <Event Name="TIME_UP" />
+      <Event Name="TIME_UP_2" />
+      <Event Name="CLEAR" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm">
+        <With Var="QO" />
+        <With Var="trip" />
+      </Event>
+      <Event Name="CNF" Comment="Execution Confirmation">
+        <With Var="QO" />
+        <With Var="trip" />
+      </Event>
+      <Event Name="START_TIMER" />
+      <Event Name="START_TIMER_2" />
+      <Event Name="RESET_OUT">
+        <With Var="trip" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="QI" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="pickup_current" Type="INT" />
+      <VarDeclaration Name="current1" Type="REAL" />
+      <VarDeclaration Name="current2" Type="REAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="QO" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="trip" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="fault" Type="BOOL" />
+      <VarDeclaration Name="differential" Type="REAL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="INIT" Comment="Initialization" x="923.5294" y="141.1765">
+        <ECAction Algorithm="INIT" Output="INITO" />
+      </ECState>
+      <ECState Name="STATE2" x="3760" y="1460">
+        <ECAction Algorithm="REQ" Output="CNF" />
+        <ECAction Output="START_TIMER_2" />
+      </ECState>
+      <ECState Name="STATE3" x="1840" y="2072">
+        <ECAction Algorithm="RESET" Output="RESET_OUT" />
+      </ECState>
+      <ECState Name="STATE4" x="4068" y="767.9999">
+        <ECAction Algorithm="REQ2" Output="START_TIMER" />
+      </ECState>
+      <ECState Name="STATE5" x="1648" y="540">
+        <ECAction Algorithm="REQ3" />
+      </ECState>
+      <ECState Name="STATE6" x="4080" y="1156">
+        <ECAction Algorithm="REQ3" />
+      </ECState>
+      <ECState Name="STATE7" x="488" y="2028">
+        <ECAction Algorithm="RESET" Output="RESET_OUT" />
+      </ECState>
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="731.1476" y="204.8375" />
+      <ECTransition Source="STATE6" Destination="STATE2" Condition="TIME_UP" x="3898.951" y="1333.233">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="981.3563,326.3084,964.0173,344.5136" />
+      </ECTransition>
+      <ECTransition Source="STATE6" Destination="STATE3" Condition="(differential &lt; pickup_current)OR (differential=pickup_current)" x="2868.302" y="1419.94">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="798.3501,304.9864,627.2874,376.131" />
+      </ECTransition>
+      <ECTransition Source="STATE2" Destination="STATE3" Condition="TIME_UP_2" x="2761.194" y="1853.65">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="758.9971,447.2357,612.8064,491.8828" />
+      </ECTransition>
+      <ECTransition Source="STATE7" Destination="STATE5" Condition="1" x="739.563" y="1341.57">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="118.5367,402.9546,203.0303,277.4257" />
+      </ECTransition>
+      <ECTransition Source="STATE4" Destination="STATE6" Condition="1" x="4057.759" y="948.2144">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="1013.315,224.0859,1013.99,247.7237" />
+      </ECTransition>
+      <ECTransition Source="STATE5" Destination="STATE7" Condition="RESET" x="661.7374" y="901.4182">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="180.238,135.4704,95.28016,255.7994" />
+      </ECTransition>
+      <ECTransition Source="STATE5" Destination="STATE4" Condition="differential &gt; pickup_current" x="2425.916" y="788.8752">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="488.3932,197.922,659.1682,213.9176" />
+      </ECTransition>
+      <ECTransition Source="STATE5" Destination="STATE5" Condition="REQ" x="1712.068" y="309.7537">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="464.678,62.59977,399.6143,62.59977" />
+      </ECTransition>
+      <ECTransition Source="INIT" Destination="STATE5" Condition="REQ" x="902.7376" y="405.896">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="179.2717,92.96745,224.048,117.617" />
+      </ECTransition>
+      <ECTransition Source="STATE6" Destination="STATE6" Condition="REQ AND (differential &gt; pickup_current)" x="4240.174" y="986.0862">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="1101.824,236.7106,1036.76,236.7106" />
+      </ECTransition>
+      <ECTransition Source="STATE3" Destination="STATE5" Condition="CLEAR" x="1743.679" y="1381">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="443.455,410.9848,428.545,292.0152" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="INIT" Comment="Initialization algorithm">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;trip := FALSE;&#xD;&#xA;fault := FALSE;" />
+    </Algorithm>
+    <Algorithm Name="REQ" Comment="Normally executed algorithm">
+      <ST Text=";&#xD;&#xA;trip := TRUE;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="RESET">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;trip := FALSE;&#xD;&#xA;fault := FALSE;&#xD;&#xA;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="REQ2">
+      <ST Text=";&#xD;&#xA;fault := TRUE;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="REQ3">
+      <ST Text=";&#xD;&#xA;differential := ABS(current1 - current2);&#xD;&#xA;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

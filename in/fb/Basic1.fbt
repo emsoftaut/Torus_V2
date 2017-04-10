@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="A7A95FB9223F1B0F" Name="Basic1" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="Chen-Wei" Date="24/05/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="in" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm" />
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="in" Type="REAL" />
+    </InputVars>
+  </InterfaceList>
+  <BasicFB>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="INIT" Comment="Initialization" x="1431.53" y="121.1765" />
+      <ECState Name="STATE1" x="1536" y="592">
+        <ECAction Algorithm="INIT" Output="INITO" />
+      </ECState>
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="1004.807" y="189.2395">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="225.3221,51.80026,280.0567,32.59773" />
+      </ECTransition>
+      <ECTransition Source="INIT" Destination="STATE1" Condition="INIT &amp; (in &gt; 30)" x="1564.769" y="340.3417">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="391.9595,68.46243,398.7356,99.00067" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="INIT" Comment="Initialization algorithm">
+      <ST Text=";" />
+    </Algorithm>
+    <Algorithm Name="REQ" Comment="Normally executed algorithm">
+      <ST Text=";" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

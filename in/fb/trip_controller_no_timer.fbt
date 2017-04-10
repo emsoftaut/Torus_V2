@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="B335DB7FD5C50F82" Name="trip_controller_no_timer" Comment="Composite Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="7" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="11/29/2016" Remarks="template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request" />
+      <Event Name="trip_differential" Comment="Normal Execution Request" />
+      <Event Name="trip_earth" Comment="Normal Execution Request" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="Trip" Comment="Execution Confirmation">
+        <With Var="Operate" />
+      </Event>
+    </EventOutputs>
+    <OutputVars>
+      <VarDeclaration Name="Operate" Type="BOOL" Comment="Current Output State" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB ID="1" Name="FB1" Type="trip_pulse_timer" x="620" y="700" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="2" Name="FB2" Type="trip_pulse_timer" x="620" y="1420" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="3" Name="FB4" Type="Timer_TON" x="2820" y="780" Namespace="Main">
+      <Parameter Name="time" Value="0.005" />
+    </FB>
+    <FB ID="4" Name="FB5" Type="NOTRIP" x="3640" y="800" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="5" Name="FB6" Type="TRIP" x="2100" y="800" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="6" Name="FB7" Type="E_SR" x="3640" y="1640" Namespace="IEC61499.Standard" />
+    <FB ID="7" Name="FB3" Type="E_MERGE" x="1500" y="860" Namespace="IEC61499.Standard" />
+    <Input Name="INIT">
+      <Position>
+        <X>8.854172</X>
+        <Y>172.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="trip_differential">
+      <Position>
+        <X>16.4869843</X>
+        <Y>197.963531</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="trip_earth">
+      <Position>
+        <X>16.4869843</X>
+        <Y>372.963562</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Output Name="Trip">
+      <Position>
+        <X>1030</X>
+        <Y>427.963562</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="Operate">
+      <Position>
+        <X>1070</X>
+        <Y>477.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Output>
+    <EventConnections>
+      <Connection Source="FB4.CNF" Destination="FB5.REQ" dx1="40" />
+      <Connection Source="FB6.CNF" Destination="FB4.START" dx1="40" />
+      <Connection Source="FB6.CNF" Destination="FB7.S" dx1="40" />
+      <Connection Source="FB5.CNF" Destination="FB7.R" dx1="40" dx2="70" dy="352" />
+      <Connection Source="FB7.EO" Destination="Trip" dx1="68.354" />
+      <Connection Source="FB1.INITO" Destination="FB6.INIT" dx1="677.7292" />
+      <Connection Source="FB6.INITO" Destination="FB5.INIT">
+        <Points>
+          <Points>
+            <X>634.0885</X>
+            <Y>209.5</Y>
+          </Points>
+          <Points>
+            <X>644.0885</X>
+            <Y>209.5</Y>
+          </Points>
+          <Points>
+            <X>644.0885</X>
+            <Y>177.5</Y>
+          </Points>
+          <Points>
+            <X>842.5</X>
+            <Y>177.5</Y>
+          </Points>
+          <Points>
+            <X>842.5</X>
+            <Y>209.5</Y>
+          </Points>
+          <Points>
+            <X>905</X>
+            <Y>209.5</Y>
+          </Points>
+        </Points>
+      </Connection>
+      <Connection Source="FB1.trip_out" Destination="FB3.EI1" dx1="40" />
+      <Connection Source="FB2.trip_out" Destination="FB3.EI2" dx1="40" />
+      <Connection Source="FB3.EO" Destination="FB6.REQ" />
+      <Connection Source="INIT" Destination="FB1.INIT" dx1="40" />
+      <Connection Source="INIT" Destination="FB2.INIT" dx1="45.41669" />
+      <Connection Source="trip_differential" Destination="FB1.trip" dx1="40" />
+      <Connection Source="trip_earth" Destination="FB2.trip" dx1="40" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="FB7.Q" Destination="Operate" dx1="48.354" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

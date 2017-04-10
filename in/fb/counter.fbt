@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="1722C2E4FA70BEAA" Name="counter" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="5/24/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="REQ" Comment="Normal Execution Request">
+        <With Var="QI" />
+        <With Var="time" />
+      </Event>
+      <Event Name="Start">
+        <With Var="time" />
+      </Event>
+      <Event Name="NewTime">
+        <With Var="time" />
+      </Event>
+      <Event Name="Stop" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="CNF" Comment="Execution Confirmation">
+        <With Var="QO" />
+        <With Var="countLimit" />
+        <With Var="counter" />
+      </Event>
+      <Event Name="debug">
+        <With Var="countLimit" />
+        <With Var="counter" />
+      </Event>
+      <Event Name="StartCycle" />
+      <Event Name="StopCycle" />
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="QI" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="time" Type="REAL" Comment="in seconds" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="QO" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="countLimit" Type="REAL" />
+      <VarDeclaration Name="counter" Type="REAL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="step" Type="BOOL" InitialValue="FALSE" />
+      <VarDeclaration Name="countLimitInt" Type="REAL" />
+      <VarDeclaration Name="counterInt" Type="REAL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="REQ" Comment="Normal execution" x="1729.647" y="1248.941" />
+      <ECState Name="STATE1" x="1136" y="2124">
+        <ECAction Output="CNF" />
+      </ECState>
+      <ECState Name="STATE2" x="1012" y="236">
+        <ECAction Algorithm="Reset" Output="debug" />
+        <ECAction Output="StopCycle" />
+      </ECState>
+      <ECState Name="STATE3" x="2008" y="728">
+        <ECAction Output="StartCycle" />
+      </ECState>
+      <ECState Name="STATE4" x="2268" y="1640">
+        <ECAction Algorithm="REQ" Output="debug" />
+      </ECState>
+      <ECTransition Source="STATE4" Destination="STATE1" Condition="(countLimitInt&gt;time) " x="1567.908" y="1741.484">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="422.2455,408.7834,348.0905,442.9877" />
+      </ECTransition>
+      <ECTransition Source="STATE1" Destination="STATE2" Condition="1" x="619.2541" y="1051.902">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="127.864,320.2211,114.0137,184.3801" />
+      </ECTransition>
+      <ECTransition Source="START" Destination="STATE2" Condition="1" x="771.5935" y="249.5174">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="186.8113,61.88676,204.424,54.46617" />
+      </ECTransition>
+      <ECTransition Source="STATE2" Destination="STATE3" Condition="Start" x="1452.312" y="564.5363">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="328.929,129.9726,394.8573,163.7316" />
+      </ECTransition>
+      <ECTransition Source="REQ" Destination="STATE2" Condition="Stop" x="1130.24" y="934.2174">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="292.5595,283.6796,241.1147,212.7363" />
+      </ECTransition>
+      <ECTransition Source="STATE3" Destination="STATE2" Condition="Stop" x="1359.208" y="744.6713">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="360.6798,219.6433,303.9838,188.9533" />
+      </ECTransition>
+      <ECTransition Source="REQ" Destination="STATE4" Condition="REQ" x="2051.25" y="1380.448">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="497.9536,328.9453,530.8436,352.8365" />
+      </ECTransition>
+      <ECTransition Source="STATE4" Destination="REQ" Condition="(countLimitInt&lt;time) AND (NOT (countLimitInt=time))" x="1986.333" y="1521.804">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="516.1509,398.0632,483.2609,374.1721" />
+      </ECTransition>
+      <ECTransition Source="STATE3" Destination="REQ" Condition="1" x="1943.217" y="1023.816">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="498.5301,241.542,479.9811,276.2567" />
+      </ECTransition>
+      <ECTransition Source="STATE4" Destination="STATE1" Condition="(countLimitInt=time)" x="2220.067" y="1938.339">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="627.1244,471.8943,553.1321,503.5307" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="REQ" Comment="Normally executed algorithm">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;//countLimit:= time/0.01;// divide the given time to 10 ms, result - counter limit&#xD;&#xA;// e.g. 5 sec/ 0.01 = 500; count till 500 will give 5 seconds (interval 10 ms)&#xD;&#xA;//countLimit:= time/0.005;&#xD;&#xA;//countLimit:= time/0.005;&#xD;&#xA;//countLimit:= time/0.001;&#xD;&#xA;counterInt:=counterInt+1;&#xD;&#xA;countLimitInt := counterInt * 0.002;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;counter:=counterInt;&#xD;&#xA;countLimit := countLimitInt;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;//REQ:= FALSE;" />
+    </Algorithm>
+    <Algorithm Name="Reset">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;countLimit:= 0;&#xD;&#xA;&#xD;&#xA;counter:=0;&#xD;&#xA;countLimitInt:= 0;&#xD;&#xA;&#xD;&#xA;counterInt:=0;&#xD;&#xA;&#xD;&#xA;step:=FALSE;&#xD;&#xA;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

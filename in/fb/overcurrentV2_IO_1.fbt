@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="AC4097F2F3D5AB68" Name="overcurrentV2_IO_1" Comment="Composite Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="21" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="Chen-Wei" Date="23/05/2016" Remarks="template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="rDefiniteTime" />
+        <With Var="rConstant_K" />
+        <With Var="rStartLevel" />
+        <With Var="dCFG_CurveType" />
+        <With Var="rMinTripTime" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request">
+        <With Var="rMeasuredCurrent" />
+        <With Var="rDefiniteTime" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm" />
+      <Event Name="Operate" Comment="Delayed Event">
+        <With Var="operateCB" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="rMeasuredCurrent" Type="REAL" Comment="Input event qualifier" />
+      <VarDeclaration Name="rDefiniteTime" Type="REAL" />
+      <VarDeclaration Name="rConstant_K" Type="REAL" />
+      <VarDeclaration Name="rStartLevel" Type="REAL" />
+      <VarDeclaration Name="dCFG_CurveType" Type="INT" />
+      <VarDeclaration Name="rMinTripTime" Type="REAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="operateCB" Type="BOOL" Comment="Output event qualifier" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB ID="12" Name="FB5" Type="TRIP" x="2460" y="920" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="1" Name="FB1" Type="overcurrentV2" x="1200" y="900" Namespace="Main" />
+    <FB ID="20" Name="FB2" Type="NOTRIP" x="2440" y="1580" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="21" Name="FB3" Type="boolMerger" x="3280" y="1380" Namespace="Main" />
+    <Input Name="INIT">
+      <Position>
+        <X>205</X>
+        <Y>227.963531</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="REQ">
+      <Position>
+        <X>200</X>
+        <Y>242.963531</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="rDefiniteTime">
+      <Position>
+        <X>110</X>
+        <Y>367.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="rConstant_K">
+      <Position>
+        <X>115</X>
+        <Y>352.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="rStartLevel">
+      <Position>
+        <X>120</X>
+        <Y>337.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="dCFG_CurveType">
+      <Position>
+        <X>110</X>
+        <Y>322.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="rMeasuredCurrent">
+      <Position>
+        <X>105</X>
+        <Y>307.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="rMinTripTime">
+      <Position>
+        <X>330</X>
+        <Y>452.963531</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Output Name="INITO">
+      <Position>
+        <X>535</X>
+        <Y>207.963531</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="Operate">
+      <Position>
+        <X>920</X>
+        <Y>352.963562</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="operateCB">
+      <Position>
+        <X>930</X>
+        <Y>432.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Output>
+    <EventConnections>
+      <Connection Source="INIT" Destination="FB1.INIT" dx1="40" />
+      <Connection Source="REQ" Destination="FB1.REQ" dx1="59.47913" />
+      <Connection Source="FB1.INITO" Destination="INITO" dx1="57.14587" />
+      <Connection Source="FB1.tmrTrip" Destination="FB5.REQ" dx1="40" />
+      <Connection Source="FB1.INITO" Destination="FB5.INIT" dx1="60" />
+      <Connection Source="FB5.CNF" Destination="FB3.IN1" dx1="60" />
+      <Connection Source="FB2.CNF" Destination="FB3.IN2" dx1="53.646" />
+      <Connection Source="FB3.OUT" Destination="Operate" dx1="60" />
+      <Connection Source="FB1.INITO" Destination="FB2.INIT" dx1="60" />
+      <Connection Source="FB5.CNF" Destination="FB2.REQ" dx1="60" dx2="70" dy="352" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="rDefiniteTime" Destination="FB1.rDefiniteTime" dx1="40" />
+      <Connection Source="rConstant_K" Destination="FB1.rConstant_K" dx1="49.79175" />
+      <Connection Source="rStartLevel" Destination="FB1.rStartLevel" dx1="40.20837" />
+      <Connection Source="dCFG_CurveType" Destination="FB1.dCFG_CurveType" dx1="40" dx2="100" dy="-1" />
+      <Connection Source="rMeasuredCurrent" Destination="FB1.rMeasuredCurrent" dx1="0.5625" />
+      <Connection Source="FB5.OPERATE" Destination="FB3.in1" dx1="40" />
+      <Connection Source="FB2.OPERATE" Destination="FB3.in2" dx1="73.646" />
+      <Connection Source="FB3.out" Destination="operateCB" dx1="40" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

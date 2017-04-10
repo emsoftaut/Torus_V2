@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SCL xmlns="http://www.iec.ch/61850/2003/SCL" xmlns:sxy="http://www.iec.ch/61850/2003/SCLcoordinates">
+	<Header id="Models" nameStructure="IEDName" revision="R 001" toolID="Helinks STS" version="V 0.0">
+		<History>
+			<Hitem revision="R 001" version="V 0.0" what="History file created" when="Tue Jan 17 14:32:04 NZDT 2017" who="System" why="History reset"/>
+		</History>
+	</Header>
+	<Substation desc="Substation 01 130kV" name="Sys" sxy:x="6" sxy:y="5">
+		<VoltageLevel desc="130kV" name="J">
+			<Voltage multiplier="k" unit="V">130</Voltage>
+			<Bay name="BB1">
+				<ConnectivityNode name="L1" pathName="MFS/J/BB1/L1"/>
+			</Bay>
+			<Bay name="01" sxy:x="3" sxy:y="2">
+				<LNode lnClass="PTRC" lnInst="0" prefix="" ldInst="Protection" iedName="IED64" lnType="ptrc_IEC 61850-7-4:2007"/>
+				<LNode lnClass="PTOC" lnInst="0" prefix="" ldInst="Protection" iedName="IED50" lnType="ptoc_IEC 61850-7-4:2007"/>
+				<LNode lnClass="PTOC" lnInst="1" prefix="" ldInst="Protection" iedName="IED87" lnType="ptoc_IEC 61850-7-4:2007"/>
+				<ConductingEquipment name="T1" sxy:y="4" type="CTR">
+					<Terminal bayName="01" cNodeName="L1" name="T1" substationName="MFS" voltageLevelName="J" connectivityNode="MFS/J/01/L1"/>
+					<Terminal bayName="01" cNodeName="L12" name="T2" substationName="MFS" voltageLevelName="J" connectivityNode="MFS/J/01/L12"/>
+					<SubEquipment name="L1" phase="A">
+						<LNode lnClass="TCTR" lnInst="1" prefix="A" ldInst="CTR/T1" iedName="IED64" lnType="tctr"/>
+					</SubEquipment>
+					<SubEquipment name="L2" phase="B">
+						<LNode lnClass="TCTR" lnInst="2" prefix="B" ldInst="CTR/T1" iedName="IED50" lnType="tctr"/>
+					</SubEquipment>
+					<SubEquipment name="L3" phase="C">
+						<LNode lnClass="TCTR" lnInst="3" prefix="C" ldInst="CTR/T1" iedName="IED87" lnType="tctr"/>
+					</SubEquipment>
+				</ConductingEquipment>
+				<ConductingEquipment name="IFL2" sxy:y="6" type="IFL">
+					<Terminal bayName="01" cNodeName="L1" name="T1" substationName="MFS" voltageLevelName="J" connectivityNode="MFS/J/01/L1"/>
+				</ConductingEquipment>
+				<ConductingEquipment name="Q1" type="CBR">
+					<LNode lnClass="XCBR" lnInst="1" prefix="Q1" ldInst="CBR/Q1" iedName="IED64" lnType="xcbr"/>
+					<LNode lnClass="CSWI" lnInst="1" prefix="Q1" ldInst="CBR/Q1" iedName="IED64" lnType="cswi"/>
+					<LNode lnClass="CILO" lnInst="1" prefix="Q1" ldInst="CBR/Q1" iedName="IED64" lnType="cilo"/>
+					<Terminal bayName="01" cNodeName="L11" name="T1" substationName="MFS" voltageLevelName="J" connectivityNode="MFS/J/01/L11"/>
+					<Terminal bayName="BB1" cNodeName="L1" name="T2" substationName="MFS" voltageLevelName="J" connectivityNode="MFS/J/BB1/L1"/>
+				</ConductingEquipment>
+				<ConductingEquipment name="Q0" sxy:y="2" type="CBR">
+					<LNode lnClass="XCBR" lnInst="2" prefix="Q0" ldInst="CBR/CBR3" iedName="IED50" lnType="xcbr"/>
+					<LNode lnClass="CSWI" lnInst="2" prefix="Q0" ldInst="CBR/CBR3" iedName="IED50" lnType="cswi"/>
+					<LNode lnClass="CILO" lnInst="2" prefix="Q0" ldInst="CBR/CBR3" iedName="IED50" lnType="cilo"/>
+					<Terminal bayName="01" cNodeName="L11" name="T1" substationName="MFS" voltageLevelName="J" connectivityNode="MFS/J/01/L11"/>
+					<Terminal bayName="01" cNodeName="L12" name="T2" substationName="MFS" voltageLevelName="J" connectivityNode="MFS/J/01/L12"/>
+				</ConductingEquipment>
+				<ConductingEquipment name="Q2" sxy:y="2" type="CBR">
+					<LNode lnClass="XCBR" lnInst="3" prefix="Q0" ldInst="CBR/CBR3" iedName="IED87" lnType="xcbr"/>
+					<LNode lnClass="CSWI" lnInst="3" prefix="Q0" ldInst="CBR/CBR3" iedName="IED87" lnType="cswi"/>
+					<LNode lnClass="CILO" lnInst="3" prefix="Q0" ldInst="CBR/CBR3" iedName="IED87" lnType="cilo"/>
+					<Terminal bayName="01" cNodeName="L11" name="T1" substationName="MFS" voltageLevelName="J" connectivityNode="MFS/J/01/L11"/>
+					<Terminal bayName="01" cNodeName="L12" name="T2" substationName="MFS" voltageLevelName="J" connectivityNode="MFS/J/01/L12"/>
+				</ConductingEquipment>
+				<ConnectivityNode name="grounded" pathName="MFS/J/01/grounded"/>
+				<ConnectivityNode name="L1" pathName="MFS/J/01/L1"/>
+				<ConnectivityNode name="L11" pathName="MFS/J/01/L11"/>
+				<ConnectivityNode name="L12" pathName="MFS/J/01/L12"/>
+			</Bay>
+		</VoltageLevel>
+	</Substation>
+</SCL>

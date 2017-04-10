@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="1513B4CBFEA27EB6" Name="CommToMatlab" Comment="Extracted Composite Function Block Type" Namespace="Main">
+  <VersionInfo Author="gulzha" Date="5/20/2016" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="FB13_IN1" Comment="Normal Execution Request">
+        <With Var="FB13_in1" />
+      </Event>
+      <Event Name="FB13_IN2">
+        <With Var="FB13_in2" />
+      </Event>
+      <Event Name="FB13_IN3">
+        <With Var="FB13_in3" />
+      </Event>
+      <Event Name="FB16_INIT" Comment="Initialization Request" />
+    </EventInputs>
+    <InputVars>
+      <VarDeclaration Name="FB13_in1" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="FB13_in2" Type="BOOL" />
+      <VarDeclaration Name="FB13_in3" Type="BOOL" />
+    </InputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB Name="FB6" Type="NETIO_2031720274" x="5540" y="2640" Namespace="Main">
+      <Attribute Name="Configuration.GenericFBType.InterfaceParams" Value="Runtime.IoCommon#I:=1;SD:BYTE[8];RD:BYTE[8]" />
+      <Parameter Name="QI" Value="TRUE" />
+      <Parameter Name="ENDPOINT" Value="UDP:1500;127.0.0.1:1516" />
+      <Parameter Name="SD_LEN" Value="8" />
+    </FB>
+    <FB Name="FB13" Type="boolMerger" x="4040" y="1960" Namespace="Main" />
+    <FB Name="FB16" Type="sendBool" x="4620" y="1980" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB Name="FB11" Type="Double2Byte" x="4560" y="2500" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <EventConnections>
+      <Connection Source="FB13.OUT" Destination="FB16.REQ" dx1="60" />
+      <Connection Source="FB16.INITO" Destination="FB11.INIT" dx1="80" dx2="50" dy="412" />
+      <Connection Source="FB11.INITO" Destination="FB6.INIT" dx1="87.854" />
+      <Connection Source="FB16.CNF" Destination="FB11.REQ" dx1="60" dx2="70" dy="352" />
+      <Connection Source="FB11.CNF" Destination="FB6.REQ" dx1="67.854" />
+      <Connection Source="FB13_IN1" Destination="FB13.IN1" />
+      <Connection Source="FB13_IN2" Destination="FB13.IN2" />
+      <Connection Source="FB13_IN3" Destination="FB13.IN3" />
+      <Connection Source="FB16_INIT" Destination="FB16.INIT" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="FB13.out" Destination="FB16.variable" dx1="40" />
+      <Connection Source="FB11.byteArray" Destination="FB6.SD" dx1="90" />
+      <Connection Source="FB16.dataArray" Destination="FB11.DataToSend" dx1="40" dx2="110" dy="92" />
+      <Connection Source="FB13_in1" Destination="FB13.in1" />
+      <Connection Source="FB13_in2" Destination="FB13.in2" />
+      <Connection Source="FB13_in3" Destination="FB13.in3" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

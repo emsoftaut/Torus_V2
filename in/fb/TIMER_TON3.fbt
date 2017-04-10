@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="4EF4CB22462AEAC8" Name="TIMER_TON3" Comment="Composite Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="2" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="7/6/2016" Remarks="template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="time_in" />
+      </Event>
+      <Event Name="START" Comment="Normal Execution Request">
+        <With Var="time_in" />
+      </Event>
+      <Event Name="STOP" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm" />
+      <Event Name="EO" Comment="Delayed Event" />
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="time_in" Type="REAL" />
+    </InputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB ID="1" Name="FB2" Type="E_DELAYR" x="2640" y="680" Namespace="Runtime.Standard" />
+    <FB ID="2" Name="FB1" Type="Time_Count" x="1400" y="600" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <Input Name="INIT">
+      <Position>
+        <X>183.854156</X>
+        <Y>117.963539</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="START">
+      <Position>
+        <X>166.445313</X>
+        <Y>167.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="STOP">
+      <Position>
+        <X>169.40625</X>
+        <Y>197.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="time_in">
+      <Position>
+        <X>164.8646</X>
+        <Y>267.963531</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Output Name="INITO">
+      <Position>
+        <X>739.70575</X>
+        <Y>97.96354</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="EO">
+      <Position>
+        <X>841.2214</X>
+        <Y>172.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <EventConnections>
+      <Connection Source="FB1.INITO" Destination="INITO" dx1="40" />
+      <Connection Source="INIT" Destination="FB1.INIT" dx1="45.41669" />
+      <Connection Source="START" Destination="FB1.START" dx1="40" />
+      <Connection Source="STOP" Destination="FB1.STOP" dx1="47.625" />
+      <Connection Source="FB1.START_OUT" Destination="FB2.START" dx1="40" />
+      <Connection Source="FB1.STOP_OUT" Destination="FB2.STOP" dx1="40" />
+      <Connection Source="FB2.EO" Destination="FB1.DONE" dx1="49.22925" dx2="110" dy="-188" />
+      <Connection Source="FB1.RESTART_OUT" Destination="FB2.RESTART" dx1="40" />
+      <Connection Source="FB2.EO" Destination="EO" dx1="49.22925" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="FB1.time_out" Destination="FB2.DT" dx1="137.4167" />
+      <Connection Source="time_in" Destination="FB1.time_in" dx1="49.45825" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

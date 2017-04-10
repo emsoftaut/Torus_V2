@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="958ED4C16711746C" Name="Time_Count" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="7/6/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="QI" />
+      </Event>
+      <Event Name="START" Comment="Normal Execution Request">
+        <With Var="QI" />
+        <With Var="time_in" />
+      </Event>
+      <Event Name="STOP" />
+      <Event Name="DONE" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm">
+        <With Var="QO" />
+      </Event>
+      <Event Name="START_OUT" Comment="Execution Confirmation">
+        <With Var="QO" />
+        <With Var="time_out" />
+      </Event>
+      <Event Name="STOP_OUT">
+        <With Var="time_out" />
+      </Event>
+      <Event Name="RESTART_OUT">
+        <With Var="time_out" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="QI" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="time_in" Type="REAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="QO" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="time_out" Type="TIME" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="TimeStampStart" Type="DATE_AND_TIME" />
+      <VarDeclaration Name="TimeStampRestart" Type="DATE_AND_TIME" />
+      <VarDeclaration Name="time_elapsed" Type="TIME" InitialValue="0" />
+      <VarDeclaration Name="started" Type="BOOL" InitialValue="FALSE" />
+      <VarDeclaration Name="time_in_internal" Type="TIME" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="340.9412" y="465.4117" />
+      <ECState Name="INIT" Comment="Initialization" x="923.5294" y="141.1765">
+        <ECAction Algorithm="INIT" Output="INITO" />
+      </ECState>
+      <ECState Name="start" Comment="Normal execution" x="2797.647" y="644.9411">
+        <ECAction Algorithm="Start" Output="START_OUT" />
+      </ECState>
+      <ECState Name="restart" x="1984" y="1620">
+        <ECAction Algorithm="Restart" Output="RESTART_OUT" />
+      </ECState>
+      <ECState Name="stop" x="864" y="1616">
+        <ECAction Algorithm="Stop" Output="STOP_OUT" />
+      </ECState>
+      <ECState Name="STATE3" x="1452" y="544" />
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="627.7418" y="222.763">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="141.7142,59.92001,174.7527,41.53268" />
+      </ECTransition>
+      <ECTransition Source="INIT" Destination="STATE3" Condition="1" x="1231.005" y="277.0647">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="291.0649,51.72418,326.6771,78.13479" />
+      </ECTransition>
+      <ECTransition Source="restart" Destination="STATE3" Condition="1" x="1614.5" y="1113.99">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="417.2206,321.9161,376.3468,240.4105" />
+      </ECTransition>
+      <ECTransition Source="STATE3" Destination="stop" Condition="DONE" x="1214.831" y="1124.718">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="329.3604,245.0749,285.0782,324.7368" />
+      </ECTransition>
+      <ECTransition Source="STATE3" Destination="stop" Condition="STOP" x="966.0253" y="1109.172">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="251.5526,239.3719,204.7361,320.0762" />
+      </ECTransition>
+      <ECTransition Source="stop" Destination="STATE3" Condition="1" x="1158.826" y="976.0194">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="267.4972,276.4627,313.9609,194.2169" />
+      </ECTransition>
+      <ECTransition Source="start" Destination="STATE3" Condition="1" x="2117.806" y="432.549">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="572.1022,101.6594,481.5558,95.36732" />
+      </ECTransition>
+      <ECTransition Source="STATE3" Destination="start" Condition="START AND (NOT started)" x="2184.868" y="745.2448">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="502.0986,191.4574,597.2579,199.05" />
+      </ECTransition>
+      <ECTransition Source="STATE3" Destination="restart" Condition="START AND (started AND NE(REAL_TO_TIME(time_in*1000), time_in_internal))" x="1853.617" y="1008.883">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="451.984,205.6429,492.0175,286.6125" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="INIT" Comment="Initialization algorithm">
+      <ST Text=";&#xD;&#xA;//time_out:=0;&#xD;&#xA;//time_elapsed:=0;&#xD;&#xA;//TimeStampRestart := 0;&#xD;&#xA;//TimeStampStart := 0;&#xD;&#xA;started := FALSE;&#xD;&#xA;//time_in_internal := 0; &#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="Start" Comment="Normally executed algorithm">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;TimeStampStart := CURRENT_DT();&#xD;&#xA;time_in_internal := REAL_TO_TIME(time_in*1000);&#xD;&#xA;time_out := time_in_internal;&#xD;&#xA;started := TRUE;&#xD;&#xA;&#xD;&#xA;//time_out := REAL_TO_TIME(time_in*1000); // convert seconds into ms, then convert it into TIME format&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="Restart">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;TimeStampRestart := CURRENT_DT();&#xD;&#xA;time_in_internal := REAL_TO_TIME(time_in*1000);&#xD;&#xA;&#xD;&#xA;time_elapsed := SUB_DT_DT(TimeStampRestart, TimeStampStart);&#xD;&#xA;//time_elapsed := D TimeStampRestart - TimeStampStart;&#xD;&#xA;time_out := time_in_internal- time_elapsed;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="Stop">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;//time_out:=0;&#xD;&#xA;//time_elapsed:=0;&#xD;&#xA;//TimeStampRestart := 0;&#xD;&#xA;//TimeStampStart := 0;&#xD;&#xA;started := FALSE;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

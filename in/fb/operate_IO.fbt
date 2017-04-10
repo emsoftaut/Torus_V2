@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="83E1515EEB56DCAF" Name="operate_IO" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="Chen-Wei" Date="24/03/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="REQ" Comment="Normal Execution Request">
+        <With Var="trip" />
+      </Event>
+      <Event Name="REQ2">
+        <With Var="lower" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="Operate" Comment="Execution Confirmation">
+        <With Var="operateCB" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="trip" Type="BOOL" />
+      <VarDeclaration Name="lower" Type="BOOL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="operateCB" Type="BOOL" Comment="Output event qualifier" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="REQ" Comment="Normal execution" x="217.647" y="752.9412">
+        <ECAction Algorithm="REQ" Output="Operate" />
+      </ECState>
+      <ECState Name="lower" x="1176" y="220">
+        <ECAction Algorithm="LOWER" Output="Operate" />
+      </ECState>
+      <ECTransition Source="START" Destination="REQ" Condition="REQ" x="447.8488" y="648.3352" />
+      <ECTransition Source="REQ" Destination="START" Condition="1" x="372.8767" y="512.7991" />
+      <ECTransition Source="START" Destination="lower" Condition="REQ2" x="869.0844" y="239.0372">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="202.9017,60.61839,235.2158,49.75753" />
+      </ECTransition>
+      <ECTransition Source="lower" Destination="START" Condition="1" x="905.7359" y="399.7922">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="243.1805,98.45483,210.8664,109.3157" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="REQ" Comment="Normally executed algorithm">
+      <ST Text="&#xD;&#xA;REQ := 0;&#xD;&#xA;operateCB := trip;&#xD;&#xA;&#xD;&#xA;;" />
+    </Algorithm>
+    <Algorithm Name="LOWER">
+      <ST Text="&#xD;&#xA;REQ2 := 0;&#xD;&#xA;&#xD;&#xA;operateCB := lower;&#xD;&#xA;&#xD;&#xA;;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

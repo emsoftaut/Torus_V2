@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="46EF082DB3680FDD" Name="CommFromMatlab1" Comment="Extracted Composite Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="2" />
+  <VersionInfo Author="gulzha" Date="5/20/2016" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization request event" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="FB14_IND" Comment="Data read indication event">
+        <With Var="FB14_RD" />
+      </Event>
+      <Event Name="FB15_INITO" Comment="Initialization Confirm" />
+      <Event Name="FB15_CNF" Comment="Execution Confirmation">
+        <With Var="FB15_OutData" />
+      </Event>
+    </EventOutputs>
+    <OutputVars>
+      <VarDeclaration Name="FB14_RD" Type="BYTE" ArraySize="8" Comment="Data read with every IND event" />
+      <VarDeclaration Name="FB15_OutData" Type="LREAL" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB ID="1" Name="FB14" Type="NETIO_2031720274" x="800" y="360" Namespace="Main">
+      <Attribute Name="Configuration.GenericFBType.InterfaceParams" Value="Runtime.IoCommon#I:=1;SD:BYTE[8];RD:BYTE[8]" />
+      <Parameter Name="QI" Value="TRUE" />
+      <Parameter Name="ENDPOINT" Value="UDP:127.0.0.1:14110" />
+    </FB>
+    <FB ID="2" Name="FB15" Type="Byte2DoubleArray" x="2220" y="320" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <Input Name="INIT">
+      <Position>
+        <X>63.85417</X>
+        <Y>92.96354</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Output Name="FB14_IND">
+      <Position>
+        <X>400</X>
+        <Y>122.963539</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="FB15_INITO">
+      <Position>
+        <X>685</X>
+        <Y>82.96354</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="FB15_CNF">
+      <Position>
+        <X>685</X>
+        <Y>97.96354</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="FB14_RD">
+      <Position>
+        <X>410</X>
+        <Y>267.963531</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Output>
+    <Output Name="FB15_OutData">
+      <Position>
+        <X>685</X>
+        <Y>162.963547</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Output>
+    <EventConnections>
+      <Connection Source="FB14.IND" Destination="FB14.ACK" dx1="40" dx2="30" dy="-228" />
+      <Connection Source="FB14.IND" Destination="FB15.REQ" dx1="72.16675" />
+      <Connection Source="FB14.INITO" Destination="FB15.INIT" dx1="52.16675" />
+      <Connection Source="FB14.IND" Destination="FB14_IND" dx1="60" />
+      <Connection Source="FB15.INITO" Destination="FB15_INITO" dx1="32.396" />
+      <Connection Source="FB15.CNF" Destination="FB15_CNF" dx1="32.396" />
+      <Connection Source="INIT" Destination="FB14.INIT" dx1="45.41669" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="FB14.RD" Destination="FB15.BYTE1" dx1="92.16675" />
+      <Connection Source="FB14.RD" Destination="FB14_RD" dx1="40" />
+      <Connection Source="FB15.OutData" Destination="FB15_OutData" dx1="40" dx2="40" dy="1" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

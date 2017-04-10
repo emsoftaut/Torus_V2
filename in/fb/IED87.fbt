@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FBType Name="IED87" Comment="Extracted Composite Function Block Type" Namespace="Main">
+  <VersionInfo Author="bdowdesw" Date="3/31/2017" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="FB6_REQ" Comment="Normal Execution Request">
+        <With Var="FB6_in" />
+      </Event>
+      <Event Name="FB8_INIT" Comment="Initialization Request" />
+      <Event Name="FB4_REQ" Comment="Normal Execution Request">
+        <With Var="FB4_in" />
+      </Event>
+    </EventInputs>
+    <InputVars>
+      <VarDeclaration Name="FB6_in" Type="REAL" Comment="Input event qualifier" />
+      <VarDeclaration Name="FB4_in" Type="REAL" Comment="Input event qualifier" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="FB8_trip1" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB Name="FB6" Type="Scale" x="1960" y="680" Namespace="Main" />
+    <FB Name="FB4" Type="Scale" x="2000" y="1140" Namespace="Main" />
+    <FB Name="FB8" Type="differential_protection_1_4" x="2680" y="520" Namespace="Main">
+      <Parameter Name="pickup_current1" Value="1" />
+    </FB>
+    <EventConnections>
+      <Connection Source="FB6.CNF" Destination="FB8.REQ" dx1="50" />
+      <Connection Source="FB4.CNF" Destination="FB8.REQ" dx1="50" />
+      <Connection Source="FB6_REQ" Destination="FB6.REQ" />
+      <Connection Source="FB8_INIT" Destination="FB8.INIT" />
+      <Connection Source="FB4_REQ" Destination="FB4.REQ" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="FB6.out" Destination="FB8.current3" dx1="49.85425" />
+      <Connection Source="FB4.out" Destination="FB8.current4" dx1="70" />
+      <Connection Source="FB6_in" Destination="FB6.in" />
+      <Connection Source="FB8.trip1" Destination="FB8_trip1" />
+      <Connection Source="FB4_in" Destination="FB4.in" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

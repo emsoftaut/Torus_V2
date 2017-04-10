@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="460ABFC6240FE63" Name="differential_protection_3" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="3/23/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="QI" />
+        <With Var="pickup_current" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request">
+        <With Var="QI" />
+        <With Var="pickup_current" />
+        <With Var="current1" />
+        <With Var="current2" />
+      </Event>
+      <Event Name="RESET" />
+      <Event Name="TIME_UP_2" />
+      <Event Name="CLEAR" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm">
+        <With Var="QO" />
+        <With Var="trip" />
+      </Event>
+      <Event Name="CNF" Comment="Execution Confirmation">
+        <With Var="QO" />
+        <With Var="trip" />
+      </Event>
+      <Event Name="START_TIMER_2" />
+      <Event Name="RESET_OUT">
+        <With Var="trip" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="QI" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="pickup_current" Type="REAL" />
+      <VarDeclaration Name="current1" Type="REAL" />
+      <VarDeclaration Name="current2" Type="REAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="QO" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="trip" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="fault" Type="BOOL" />
+      <VarDeclaration Name="differential" Type="REAL" />
+      <VarDeclaration Name="time2" Type="BOOL" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="INIT" Comment="Initialization" x="923.5294" y="141.1765">
+        <ECAction Algorithm="INIT" Output="INITO" />
+      </ECState>
+      <ECState Name="STATE2" x="2936" y="756.0001">
+        <ECAction Algorithm="REQ" Output="CNF" />
+        <ECAction Output="START_TIMER_2" />
+      </ECState>
+      <ECState Name="STATE3" x="1840" y="2072">
+        <ECAction Algorithm="RESET" Output="RESET_OUT" />
+      </ECState>
+      <ECState Name="STATE5" x="1648" y="540">
+        <ECAction Algorithm="REQ3" />
+      </ECState>
+      <ECState Name="STATE7" x="488" y="2028">
+        <ECAction Algorithm="RESET" Output="RESET_OUT" />
+      </ECState>
+      <ECState Name="STATE1" x="3232.159" y="1920">
+        <ECAction Algorithm="time2_up" />
+      </ECState>
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="731.1476" y="204.8375" />
+      <ECTransition Source="STATE5" Destination="STATE1" Condition="TIME_UP_2" x="2460.184" y="1034.481">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="547.9161,184.0208,676.8115,300.6909" />
+      </ECTransition>
+      <ECTransition Source="STATE7" Destination="STATE5" Condition="1" x="739.563" y="1341.57">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="118.5367,402.9546,203.0303,277.4257" />
+      </ECTransition>
+      <ECTransition Source="STATE5" Destination="STATE7" Condition="RESET" x="661.7374" y="901.4182">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="180.238,135.4704,95.28016,255.7994" />
+      </ECTransition>
+      <ECTransition Source="STATE5" Destination="STATE2" Condition="differential &gt; pickup_current" x="2544.128" y="354.2531">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="609.01,60.60224,695.0623,76.26354" />
+      </ECTransition>
+      <ECTransition Source="STATE5" Destination="STATE5" Condition="REQ" x="1712.068" y="309.7537">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="464.678,62.59977,399.6143,62.59977" />
+      </ECTransition>
+      <ECTransition Source="INIT" Destination="STATE5" Condition="REQ" x="902.7376" y="405.896">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="179.2717,92.96745,224.048,117.617" />
+      </ECTransition>
+      <ECTransition Source="STATE3" Destination="STATE5" Condition="1" x="1799.719" y="1212.68">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="461.2707,354.8783,446.3607,235.9087" />
+      </ECTransition>
+      <ECTransition Source="STATE2" Destination="STATE5" Condition="1" x="2441.475" y="750.6276">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="670.1781,203.5029,575.472,182.7376" />
+      </ECTransition>
+      <ECTransition Source="STATE5" Destination="STATE3" Condition="time2" x="1546.948" y="1331.238">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="365.9514,277.0086,378.8732,392.8169" />
+      </ECTransition>
+      <ECTransition Source="STATE1" Destination="STATE5" Condition="1" x="2300.703" y="1260.667">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="626.636,370.8737,504.6064,264.5707" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="INIT" Comment="Initialization algorithm">
+      <ST Text="&#xD;&#xA;&#xD;&#xA;trip := FALSE;&#xD;&#xA;fault := FALSE;&#xD;&#xA;time2 := FALSE;&#xD;&#xA;&#xD;&#xA;;" />
+    </Algorithm>
+    <Algorithm Name="REQ" Comment="Normally executed algorithm">
+      <ST Text="&#xD;&#xA;trip := TRUE;&#xD;&#xA;;" />
+    </Algorithm>
+    <Algorithm Name="RESET">
+      <ST Text="&#xD;&#xA;&#xD;&#xA;trip := FALSE;&#xD;&#xA;fault := FALSE;&#xD;&#xA;time2 := FALSE;&#xD;&#xA;&#xD;&#xA;;" />
+    </Algorithm>
+    <Algorithm Name="REQ2">
+      <ST Text="&#xD;&#xA;fault := TRUE;&#xD;&#xA;;" />
+    </Algorithm>
+    <Algorithm Name="REQ3">
+      <ST Text="&#xD;&#xA;differential := ABS(current1 - current2);&#xD;&#xA;;" />
+    </Algorithm>
+    <Algorithm Name="time2_up">
+      <ST Text="&#xD;&#xA;&#xD;&#xA;time2 := TRUE;&#xD;&#xA;;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

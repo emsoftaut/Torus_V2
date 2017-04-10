@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="4EC8BA6C3498FBF5" Name="items2Array" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="kollger" Date="19/09/2015" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="WRITE_REQ">
+        <With Var="in0" />
+        <With Var="in1" />
+        <With Var="in2" />
+        <With Var="in3" />
+        <With Var="in4" />
+        <With Var="in5" />
+        <With Var="in6" />
+        <With Var="in7" />
+        <With Var="in8" />
+        <With Var="in9" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="WRITE_CNF" Comment="Execution Confirmation">
+        <With Var="dataOut" />
+        <With Var="dataLen" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="in0" Type="LREAL" Comment="Input event qualifier" />
+      <VarDeclaration Name="in1" Type="LREAL" />
+      <VarDeclaration Name="in2" Type="LREAL" />
+      <VarDeclaration Name="in3" Type="LREAL" />
+      <VarDeclaration Name="in4" Type="LREAL" />
+      <VarDeclaration Name="in5" Type="LREAL" />
+      <VarDeclaration Name="in6" Type="LREAL" />
+      <VarDeclaration Name="in7" Type="LREAL" />
+      <VarDeclaration Name="in8" Type="LREAL" />
+      <VarDeclaration Name="in9" Type="LREAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="dataOut" Type="LREAL" ArraySize="100" Comment="Output event qualifier" />
+      <VarDeclaration Name="dataLen" Type="UINT" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="WRITE_REQ" Comment="Normal execution" x="1641.647" y="432.9412">
+        <ECAction Algorithm="algWriteReq" Output="WRITE_CNF" />
+      </ECState>
+      <ECTransition Source="START" Destination="WRITE_REQ" Condition="WRITE_REQ" x="1062.036" y="346.3135">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="233.909,82.6638,297.1495,82.87196" />
+      </ECTransition>
+      <ECTransition Source="WRITE_REQ" Destination="START" Condition="1" x="1061.793" y="515.8174">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="297.0685,132.8679,233.828,132.6628" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="algWriteReq" Comment="Normally executed algorithm">
+      <ST Text="&#xD;&#xA;dataOut[0] := in0;&#xD;&#xA;dataOut[1] := in1;&#xD;&#xA;dataOut[2] := in2;&#xD;&#xA;dataOut[3] := in3;&#xD;&#xA;dataOut[4] := in4;&#xD;&#xA;dataOut[5] := in5;&#xD;&#xA;dataOut[6] := in6;&#xD;&#xA;dataOut[7] := in7;&#xD;&#xA;dataOut[8] := in8;&#xD;&#xA;dataOut[9] := in9;&#xD;&#xA;&#xD;&#xA;dataLen := 10;&#xD;&#xA;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="41B3D45C001BB0E5" Name="trip_timer" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="11/29/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="QI" />
+      </Event>
+      <Event Name="trip" Comment="Normal Execution Request">
+        <With Var="QI" />
+        <With Var="time" />
+        <With Var="operate_in" />
+      </Event>
+      <Event Name="tripTimer_Q" />
+      <Event Name="stop_trip_timer">
+        <With Var="time" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm">
+        <With Var="QO" />
+      </Event>
+      <Event Name="trip_out" Comment="Execution Confirmation">
+        <With Var="QO" />
+        <With Var="operate" />
+      </Event>
+      <Event Name="trip_timer_start">
+        <With Var="time_out" />
+      </Event>
+      <Event Name="stop_timer" />
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="QI" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="time" Type="REAL" />
+      <VarDeclaration Name="operate_in" Type="BOOL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="QO" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="time_out" Type="REAL" />
+      <VarDeclaration Name="operate" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="2516.941" y="169.4117" />
+      <ECState Name="INIT" Comment="Initialization" x="3147.53" y="317.1756">
+        <ECAction Algorithm="INIT" Output="INITO" />
+      </ECState>
+      <ECState Name="Sample" x="2612" y="1068" />
+      <ECState Name="tmrTripPulse" x="464" y="944">
+        <ECAction Algorithm="Trip" Output="trip_out" />
+      </ECState>
+      <ECState Name="StartTimer" x="3956" y="1532">
+        <ECAction Algorithm="trip_timer_start" Output="trip_timer_start" />
+      </ECState>
+      <ECState Name="STATE2" x="2755.556" y="1961.127">
+        <ECAction Output="stop_timer" />
+      </ECState>
+      <ECTransition Source="INIT" Destination="Sample" Condition="1" x="2947.107" y="736.1391">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="759.5066,160.7282,721.0823,214.5999" />
+      </ECTransition>
+      <ECTransition Source="Sample" Destination="tmrTripPulse" Condition="tripTimer_Q" x="1537.695" y="710.8459">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="449.3468,159.8061,316.9093,155.1216" />
+      </ECTransition>
+      <ECTransition Source="StartTimer" Destination="Sample" Condition="1" x="3364.039" y="1060.59">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="894.0798,265.4477,793.7429,232.0387" />
+      </ECTransition>
+      <ECTransition Source="tmrTripPulse" Destination="Sample" Condition="1" x="1215.554" y="1172.368">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="212.5678,301.1666,346.0718,306.9583" />
+      </ECTransition>
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="2849.115" y="174.7243">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="696.6783,37.32436,727.2112,43.76215" />
+      </ECTransition>
+      <ECTransition Source="Sample" Destination="StartTimer" Condition="trip" x="3197.621" y="1358.639">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="750.0387,327.3832,841.2709,359.5638" />
+      </ECTransition>
+      <ECTransition Source="Sample" Destination="STATE2" Condition="stop_trip_timer" x="2766.283" y="1502.661">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="691.688,341.8083,702.2531,407.5385" />
+      </ECTransition>
+      <ECTransition Source="STATE2" Destination="Sample" Condition="1" x="2683.038" y="1589.563">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="676.2271,436.506,665.6619,370.7758" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="INIT" Comment="Initialization algorithm">
+      <ST Text=";&#xD;&#xA;operate := FALSE;&#xD;&#xA;operate_in := FALSE;" />
+    </Algorithm>
+    <Algorithm Name="REQ" Comment="Normally executed algorithm">
+      <ST Text=";" />
+    </Algorithm>
+    <Algorithm Name="trip_timer_start">
+      <ST Text=";&#xD;&#xA;time_out := time;" />
+    </Algorithm>
+    <Algorithm Name="reset_pulse_internal">
+      <ST Text=";&#xD;&#xA;operate := FALSE;&#xD;&#xA;time_out:=0;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="trip_pulse_timer">
+      <ST Text=";" />
+    </Algorithm>
+    <Algorithm Name="Trip">
+      <ST Text=";&#xD;&#xA;//operate := TRUE;&#xD;&#xA;operate := operate_in;" />
+    </Algorithm>
+    <Algorithm Name="setVar">
+      <ST Text=";" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

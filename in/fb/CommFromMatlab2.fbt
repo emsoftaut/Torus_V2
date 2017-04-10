@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="8EF443323767C758" Name="CommFromMatlab2" Comment="Extracted Composite Function Block Type" Namespace="Main">
+  <VersionInfo Author="gulzha" Date="5/20/2016" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="FB17_INIT" Comment="Initialization request event" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="FB18_INITO" Comment="Initialization Confirm" />
+      <Event Name="FB18_CNF" Comment="Execution Confirmation">
+        <With Var="FB18_OutData" />
+      </Event>
+    </EventOutputs>
+    <OutputVars>
+      <VarDeclaration Name="FB18_OutData" Type="LREAL" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB Name="FB17" Type="NETIO_2031720274" x="880" y="1580" Namespace="Main">
+      <Attribute Name="Configuration.GenericFBType.InterfaceParams" Value="Runtime.IoCommon#I:=1;SD:BYTE[8];RD:BYTE[8]" />
+      <Parameter Name="QI" Value="TRUE" />
+      <Parameter Name="ENDPOINT" Value="UDP:127.0.0.1:1411" />
+    </FB>
+    <FB Name="FB18" Type="Byte2DoubleArray" x="1820" y="1520" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <EventConnections>
+      <Connection Source="FB17.IND" Destination="FB17.ACK" dx1="40" dx2="30" dy="-228" />
+      <Connection Source="FB17.INITO" Destination="FB18.INIT" dx1="52.16675" />
+      <Connection Source="FB17.IND" Destination="FB18.REQ" dx1="72.16675" />
+      <Connection Source="FB17_INIT" Destination="FB17.INIT" />
+      <Connection Source="FB18.INITO" Destination="FB18_INITO" />
+      <Connection Source="FB18.CNF" Destination="FB18_CNF" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="FB17.RD" Destination="FB18.BYTE1" dx1="92.16675" />
+      <Connection Source="FB18.OutData" Destination="FB18_OutData" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

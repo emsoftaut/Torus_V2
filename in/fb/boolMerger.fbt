@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="2978E40CAA34BEBD" Name="boolMerger" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="Chen-Wei" Date="26/04/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="IN1" Comment="Normal Execution Request">
+        <With Var="in1" />
+      </Event>
+      <Event Name="IN2">
+        <With Var="in2" />
+      </Event>
+      <Event Name="IN3">
+        <With Var="in3" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="OUT" Comment="Execution Confirmation">
+        <With Var="out" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="in1" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="in2" Type="BOOL" />
+      <VarDeclaration Name="in3" Type="BOOL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="out" Type="BOOL" Comment="Output event qualifier" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="IN1" Comment="Normal execution" x="421.647" y="1208.941">
+        <ECAction Algorithm="forward_in1" Output="OUT" />
+      </ECState>
+      <ECState Name="IN2" x="1336" y="916">
+        <ECAction Algorithm="forward_in2" Output="OUT" />
+      </ECState>
+      <ECState Name="IN3" x="1436" y="252">
+        <ECAction Algorithm="forward_in3" Output="OUT" />
+      </ECState>
+      <ECTransition Source="START" Destination="IN1" Condition="IN1" x="601.9634" y="826.1305">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="160.986,177.6413,154.3702,236.583" />
+      </ECTransition>
+      <ECTransition Source="IN1" Destination="START" Condition="1" x="262.6216" y="823.1028">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="48.23383,232.6115,54.16165,179.5943" />
+      </ECTransition>
+      <ECTransition Source="START" Destination="IN2" Condition="IN2" x="1014.583" y="624.1036">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="230.3626,136.373,281.5192,168.6096" />
+      </ECTransition>
+      <ECTransition Source="IN2" Destination="START" Condition="1" x="901.8572" y="728.7992">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="250.1332,203.1421,196.4496,168.4756" />
+      </ECTransition>
+      <ECTransition Source="START" Destination="IN3" Condition="IN3" x="1014.717" y="254.42">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="226.4336,64.63338,282.2796,53.41358" />
+      </ECTransition>
+      <ECTransition Source="IN3" Destination="START" Condition="1" x="1032.199" y="417.7611">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="287.2039,102.9238,231.3578,114.1436" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="forward_in1" Comment="Normally executed algorithm">
+      <ST Text="&#xD;&#xA;IN1 := 0;&#xD;&#xA;&#xD;&#xA;out := in1;&#xD;&#xA;&#xD;&#xA;;" />
+    </Algorithm>
+    <Algorithm Name="forward_in2">
+      <ST Text="&#xD;&#xA;IN2 := 0;&#xD;&#xA;&#xD;&#xA;out := in2;&#xD;&#xA;&#xD;&#xA;;" />
+    </Algorithm>
+    <Algorithm Name="forward_in3">
+      <ST Text="&#xD;&#xA;IN3 := 0;&#xD;&#xA;&#xD;&#xA;out := in3;&#xD;&#xA;&#xD;&#xA;;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

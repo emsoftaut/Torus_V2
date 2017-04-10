@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="A0E5F82DE896C61D" Name="serializeLrealArray2ByteArray" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="kollger" Date="19/09/2015" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="SERIALIZE" Comment="Normal Execution Request">
+        <With Var="dataIn" />
+        <With Var="count" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="SERIALIZE_CNF" Comment="Execution Confirmation">
+        <With Var="dataOut" />
+        <With Var="dataLen" />
+        <With Var="status" />
+        <With Var="error" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="dataIn" Type="LREAL" ArraySize="100" />
+      <VarDeclaration Name="count" Type="UINT" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="status" Type="STRING" />
+      <VarDeclaration Name="error" Type="BOOL" />
+      <VarDeclaration Name="dataOut" Type="BYTE" ArraySize="802" />
+      <VarDeclaration Name="dataLen" Type="UINT" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="SERIALIZE" Comment="Normal execution" x="1549.647" y="452.9412">
+        <ECAction Algorithm="algSerialize" Output="SERIALIZE_CNF" />
+      </ECState>
+      <ECTransition Source="START" Destination="SERIALIZE" Condition="SERIALIZE" x="1028.598" y="355.6451">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="228.5905,84.47878,286.0035,85.83436" />
+      </ECTransition>
+      <ECTransition Source="SERIALIZE" Destination="START" Condition="1" x="1026.828" y="525.568">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="285.4135,135.8274,228.0005,134.472" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="algSerialize" Comment="Normally executed algorithm">
+      <ST Text="&#xD;&#xA;VAR&#xD;&#xA;	index : UINT := 0;&#xD;&#xA;	byteindex : UINT := 0;&#xD;&#xA;	varLWORD : LWORD := 16#0;&#xD;&#xA;END_VAR;&#xD;&#xA;&#xD;&#xA;IF count &lt;= 100 THEN&#xD;&#xA;	&#xD;&#xA;	(* Iterate through the LREAL array and transfer it to the BYTE ARRAY *)&#xD;&#xA;	FOR index := 0 TO count - 1 DO&#xD;&#xA;		varLWORD := LREAL_TO_LWORD(dataIn[index]);&#xD;&#xA;		byteindex := index * 8 + 2;&#xD;&#xA;		dataOut[byteindex] := LWORD_TO_BYTE(ROR(varLWORD,56));&#xD;&#xA;		dataOut[byteindex + 1] := LWORD_TO_BYTE(ROR(varLWORD,48));&#xD;&#xA;		dataOut[byteindex + 2] := LWORD_TO_BYTE(ROR(varLWORD,40));&#xD;&#xA;		dataOut[byteindex + 3] := LWORD_TO_BYTE(ROR(varLWORD,32));&#xD;&#xA;		dataOut[byteindex + 4] := LWORD_TO_BYTE(ROR(varLWORD,24));&#xD;&#xA;		dataOut[byteindex + 5] := LWORD_TO_BYTE(ROR(varLWORD,16));&#xD;&#xA;		dataOut[byteindex + 6] := LWORD_TO_BYTE(ROR(varLWORD,8));&#xD;&#xA;		dataOut[byteindex + 7] := LWORD_TO_BYTE(varLWORD);&#xD;&#xA;	END_FOR;&#xD;&#xA;	&#xD;&#xA;	(* calculate data length *)&#xD;&#xA;	dataLen := count * 8 + 2;&#xD;&#xA;	&#xD;&#xA;	(* encode data length *)&#xD;&#xA;	dataOut[0] := WORD_TO_BYTE(ROR(UINT_TO_WORD(count),8));&#xD;&#xA;	dataOut[1] := WORD_TO_BYTE(UINT_TO_WORD(count));&#xD;&#xA;&#xD;&#xA;  error := FALSE;&#xD;&#xA;  status := STRING#'Ok';&#xD;&#xA;ELSE&#xD;&#xA;  error := TRUE;&#xD;&#xA;  status := STRING#'count to big';&#xD;&#xA;END_IF;&#xD;&#xA;&#xD;&#xA;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

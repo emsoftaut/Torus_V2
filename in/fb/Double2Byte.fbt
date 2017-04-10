@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="322D40B1D70FF2F4" Name="Double2Byte" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="12/6/2015" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="QI" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request">
+        <With Var="QI" />
+        <With Var="DataToSend" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm">
+        <With Var="QO" />
+      </Event>
+      <Event Name="CNF" Comment="Execution Confirmation">
+        <With Var="QO" />
+        <With Var="OutData" />
+        <With Var="BYTE1" />
+        <With Var="BYTE2" />
+        <With Var="BYTE3" />
+        <With Var="BYTE4" />
+        <With Var="BYTE5" />
+        <With Var="BYTE6" />
+        <With Var="BYTE7" />
+        <With Var="BYTE8" />
+        <With Var="byteArray" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="QI" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="DataToSend" Type="LREAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="QO" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="OutData" Type="LWORD" />
+      <VarDeclaration Name="BYTE1" Type="BYTE" />
+      <VarDeclaration Name="BYTE2" Type="BYTE" />
+      <VarDeclaration Name="BYTE3" Type="BYTE" />
+      <VarDeclaration Name="BYTE4" Type="BYTE" />
+      <VarDeclaration Name="BYTE5" Type="BYTE" />
+      <VarDeclaration Name="BYTE6" Type="BYTE" />
+      <VarDeclaration Name="BYTE7" Type="BYTE" />
+      <VarDeclaration Name="BYTE8" Type="BYTE" />
+      <VarDeclaration Name="byteArray" Type="BYTE" ArraySize="8" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="temp" Type="LWORD" />
+      <VarDeclaration Name="i" Type="INT" />
+      <VarDeclaration Name="tempByte" Type="BYTE" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="INIT" Comment="Initialization" x="923.5294" y="141.1765">
+        <ECAction Algorithm="INIT" Output="INITO" />
+      </ECState>
+      <ECState Name="REQ" Comment="Normal execution" x="217.647" y="752.9412">
+        <ECAction Algorithm="REQ" Output="CNF" />
+      </ECState>
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="731.1476" y="204.8375" />
+      <ECTransition Source="INIT" Destination="START" Condition="1" x="797.5924" y="348.3232" />
+      <ECTransition Source="START" Destination="REQ" Condition="REQ" x="447.8488" y="648.3352" />
+      <ECTransition Source="REQ" Destination="START" Condition="1" x="372.8767" y="512.7991" />
+    </ECC>
+    <Algorithm Name="INIT" Comment="Initialization algorithm">
+      <ST Text=";" />
+    </Algorithm>
+    <Algorithm Name="REQ" Comment="Normally executed algorithm">
+      <ST Text=";&#xD;&#xA;temp := 0;&#xD;&#xA;temp:= LREAL_TO_LWORD(DataToSend); &#xD;&#xA;&#xD;&#xA;&#xD;&#xA;byteArray[0]:= LWORD_TO_BYTE(temp);&#xD;&#xA;BYTE1 := byteArray[0];&#xD;&#xA;temp:=  ROR(temp,8);&#xD;&#xA;&#xD;&#xA;byteArray[1]:= LWORD_TO_BYTE(temp);&#xD;&#xA;BYTE2 := byteArray[1];&#xD;&#xA;temp:=  ROR(temp,8);&#xD;&#xA;&#xD;&#xA;byteArray[2]:= LWORD_TO_BYTE(temp);&#xD;&#xA;BYTE3 := byteArray[2];&#xD;&#xA;temp:=  ROR(temp,8);&#xD;&#xA;&#xD;&#xA;byteArray[3]:= LWORD_TO_BYTE(temp);&#xD;&#xA;BYTE4 := byteArray[3];&#xD;&#xA;temp:=  ROR(temp,8);&#xD;&#xA;&#xD;&#xA;byteArray[4]:= LWORD_TO_BYTE(temp);&#xD;&#xA;BYTE5 := byteArray[4];&#xD;&#xA;temp:=  ROR(temp,8);&#xD;&#xA;&#xD;&#xA;byteArray[5]:= LWORD_TO_BYTE(temp);&#xD;&#xA;BYTE6 := byteArray[5];&#xD;&#xA;temp:=  ROR(temp,8);&#xD;&#xA;&#xD;&#xA;byteArray[6]:= LWORD_TO_BYTE(temp);&#xD;&#xA;BYTE7 := byteArray[6];&#xD;&#xA;temp:=  ROR(temp,8);&#xD;&#xA;&#xD;&#xA;byteArray[7]:= LWORD_TO_BYTE(temp);&#xD;&#xA;BYTE8 := byteArray[7];&#xD;&#xA;temp:=  ROR(temp,8);&#xD;&#xA;&#xD;&#xA;OutData:= temp; //DWORD_TO_LREAL(temp);&#xD;&#xA;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

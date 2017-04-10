@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="8DC91045E622E87A" Name="Timer_TON" Comment="Composite Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="4" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="5/24/2016" Remarks="template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="START" Comment="Begin Delay">
+        <With Var="time" />
+      </Event>
+      <Event Name="NewTime">
+        <With Var="time" />
+      </Event>
+      <Event Name="STOP" Comment="Cancel Delay" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="CNF" Comment="Execution Confirmation">
+        <With Var="countLimit" />
+        <With Var="counter" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="time" Type="REAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="countLimit" Type="REAL" />
+      <VarDeclaration Name="counter" Type="REAL" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB ID="4" Name="FB2" Type="E_HRCYCLE" x="3520" y="900" Namespace="Runtime.Standard">
+      <Parameter Name="PERIOD" Value="2000" />
+      <Parameter Name="PHASE" Value="0" />
+    </FB>
+    <FB ID="1" Name="FB1" Type="counter" x="2160" y="760" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <Input Name="NewTime">
+      <Position>
+        <X>380</X>
+        <Y>227.963531</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="time">
+      <Position>
+        <X>375</X>
+        <Y>307.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="STOP">
+      <Position>
+        <X>385</X>
+        <Y>252.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="START">
+      <Position>
+        <X>385</X>
+        <Y>202.963531</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Output Name="CNF">
+      <Position>
+        <X>700</X>
+        <Y>192.963531</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="countLimit">
+      <Position>
+        <X>695</X>
+        <Y>297.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Output>
+    <Output Name="counter">
+      <Position>
+        <X>695</X>
+        <Y>322.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Output>
+    <EventConnections>
+      <Connection Source="NewTime" Destination="FB1.NewTime" dx1="41.00012" />
+      <Connection Source="FB1.CNF" Destination="CNF" dx1="40" />
+      <Connection Source="STOP" Destination="FB1.Stop" dx1="45.25" />
+      <Connection Source="START" Destination="FB1.Start" dx1="40" />
+      <Connection Source="FB2.EO" Destination="FB1.REQ" dx1="44.771" dx2="30" dy="-248" />
+      <Connection Source="FB1.StartCycle" Destination="FB2.START" dx1="40" />
+      <Connection Source="FB1.StopCycle" Destination="FB2.STOP" dx1="40" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="time" Destination="FB1.time" dx1="45.91675" />
+      <Connection Source="FB1.countLimit" Destination="countLimit">
+        <Points>
+          <Points>
+            <X>669.364563</X>
+            <Y>309.5</Y>
+          </Points>
+          <Points>
+            <X>696.864563</X>
+            <Y>309.5</Y>
+          </Points>
+          <Points>
+            <X>696.864563</X>
+            <Y>305</Y>
+          </Points>
+          <Points>
+            <X>695</X>
+            <Y>305</Y>
+          </Points>
+        </Points>
+      </Connection>
+      <Connection Source="FB1.counter" Destination="counter" dx1="40" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

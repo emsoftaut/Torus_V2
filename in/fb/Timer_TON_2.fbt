@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="5D24539095E06DC0" Name="Timer_TON_2" Comment="Composite Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="6" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="5/24/2016" Remarks="template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="Start">
+        <With Var="time" />
+      </Event>
+      <Event Name="Stop" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="EO" Comment="Periodic event at period DT,starting at DT after START" />
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="time" Type="REAL" Comment="in seconds" />
+    </InputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB ID="4" Name="FB2" Type="E_HRCYCLE" x="3600" y="880" Namespace="Runtime.Standard" />
+    <FB ID="5" Name="FB1" Type="counter2" x="2180" y="860" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="6" Name="FB3" Type="E_DELAYR" x="880" y="1540" Namespace="Runtime.Standard" />
+    <Input Name="Start">
+      <Position>
+        <X>382.664063</X>
+        <Y>217.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="Stop">
+      <Position>
+        <X>385</X>
+        <Y>242.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="time">
+      <Position>
+        <X>376.9896</X>
+        <Y>317.963531</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Output Name="EO">
+      <Position>
+        <X>1036.22131</X>
+        <Y>222.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <EventConnections>
+      <Connection Source="FB1.StartCycle" Destination="FB2.START" dx1="40" />
+      <Connection Source="FB1.StopCycle" Destination="FB2.STOP" dx1="74.4375" />
+      <Connection Source="Start" Destination="FB1.Start" dx1="40.65625" />
+      <Connection Source="Stop" Destination="FB1.Stop" dx1="40" />
+      <Connection Source="FB2.EO" Destination="FB1.TimeIsUp" dx1="44.771" dx2="90" dy="-128" />
+      <Connection Source="FB2.EO" Destination="EO" dx1="44.771" />
+      <Connection Source="FB2.EO" Destination="FB2.STOP" dx1="44.771" dx2="70" dy="-108" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="FB1.TimeInMicrosecond" Destination="FB2.PERIOD" dx1="94.4375" />
+      <Connection Source="time" Destination="FB1.time" dx1="40" />
+      <Connection Source="FB1.TimeInMicrosecond" Destination="FB2.PHASE" dx1="94.4375" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

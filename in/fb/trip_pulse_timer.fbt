@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="727FC470CDE71CC6" Name="trip_pulse_timer" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="11/29/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="QI" />
+      </Event>
+      <Event Name="trip" Comment="Normal Execution Request">
+        <With Var="QI" />
+        <With Var="operate" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm">
+        <With Var="QO" />
+      </Event>
+      <Event Name="trip_out">
+        <With Var="operate_out" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="QI" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="operate" Type="BOOL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="QO" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="operate_out" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="INIT" Comment="Initialization" x="923.5294" y="141.1765">
+        <ECAction Algorithm="INIT" Output="INITO" />
+      </ECState>
+      <ECState Name="REQ" Comment="Normal execution" x="1465.647" y="960.9412" />
+      <ECState Name="STATE1" x="1076" y="1520">
+        <ECAction />
+        <ECAction Algorithm="trip" Output="trip_out" />
+      </ECState>
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="731.1476" y="204.8375" />
+      <ECTransition Source="INIT" Destination="REQ" Condition="1" x="1262.729" y="509.6887">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="299.7872,94.16631,339.2122,153.783" />
+      </ECTransition>
+      <ECTransition Source="REQ" Destination="STATE1" Condition="trip" x="1340.825" y="1283.355">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="351.4203,305.4669,325.0114,343.3581" />
+      </ECTransition>
+      <ECTransition Source="STATE1" Destination="REQ" Condition="1" x="1264.945" y="1165.471">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="304.5014,304.0632,330.9104,266.1721" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="INIT" Comment="Initialization algorithm">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;operate := FALSE;&#xD;&#xA;operate_out := FALSE;&#xD;&#xA;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="REQ" Comment="Normally executed algorithm">
+      <ST Text=";" />
+    </Algorithm>
+    <Algorithm Name="trip">
+      <ST Text=";&#xD;&#xA;operate_out := operate;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="reset">
+      <ST Text=";&#xD;&#xA;operate_out := FALSE;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

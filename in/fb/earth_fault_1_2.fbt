@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="A83A06594AD6DB6B" Name="earth_fault_1_2" Comment="Composite Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="10" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="3/23/2016" Remarks="template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="pickup_voltage" />
+        <With Var="voltage" />
+        <With Var="time" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request">
+        <With Var="pickup_voltage" />
+        <With Var="voltage" />
+      </Event>
+      <Event Name="RESET" />
+      <Event Name="CLEAR" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm">
+        <With Var="trip" />
+      </Event>
+      <Event Name="CNF" Comment="Execution Confirmation">
+        <With Var="trip" />
+      </Event>
+      <Event Name="RESET_OUT">
+        <With Var="trip" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="voltage" Type="REAL" />
+      <VarDeclaration Name="pickup_voltage" Type="INT" />
+      <VarDeclaration Name="time" Type="REAL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="trip" Type="BOOL" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB ID="1" Name="FB1" Type="earth_fault_2" x="1640" y="520" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="7" Name="FB3" Type="NOTRIP" x="3940" y="1180" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="8" Name="FB4" Type="TRIP" x="3800" y="560" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="9" Name="FB5" Type="boolMerger" x="4740" y="840" Namespace="Main" />
+    <FB ID="10" Name="FB6" Type="TIMER_TON3" x="3160" y="1280" Namespace="Main" />
+    <Input Name="INIT">
+      <Position>
+        <X>248.854156</X>
+        <Y>132.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="REQ">
+      <Position>
+        <X>232.369812</X>
+        <Y>162.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="RESET">
+      <Position>
+        <X>221.145844</X>
+        <Y>192.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="pickup_voltage">
+      <Position>
+        <X>155</X>
+        <Y>297.963531</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="voltage">
+      <Position>
+        <X>165</X>
+        <Y>277.963531</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="CLEAR">
+      <Position>
+        <X>181.14325</X>
+        <Y>212.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="time">
+      <Position>
+        <X>646.989563</X>
+        <Y>387.963531</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Output Name="INITO">
+      <Position>
+        <X>704.70575</X>
+        <Y>72.96354</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="CNF">
+      <Position>
+        <X>1270</X>
+        <Y>212.963547</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="trip">
+      <Position>
+        <X>1300</X>
+        <Y>287.963531</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Output>
+    <Output Name="RESET_OUT">
+      <Position>
+        <X>786.9453</X>
+        <Y>82.96354</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <EventConnections>
+      <Connection Source="INIT" Destination="FB1.INIT" dx1="45.41675" />
+      <Connection Source="FB1.INITO" Destination="INITO" dx1="41.64575" />
+      <Connection Source="REQ" Destination="FB1.REQ" dx1="40" />
+      <Connection Source="RESET" Destination="FB1.RESET" dx1="40" />
+      <Connection Source="FB1.RESET_OUT" Destination="RESET_OUT" dx1="130" />
+      <Connection Source="FB1.CNF" Destination="FB4.REQ" dx1="89.1875" />
+      <Connection Source="FB4.CNF" Destination="FB6.START" dx1="40" dx2="100" dy="352">
+        <AvoidsNodes>false</AvoidsNodes>
+      </Connection>
+      <Connection Source="FB4.CNF" Destination="FB5.IN1" dx1="60" />
+      <Connection Source="FB3.CNF" Destination="FB5.IN2" dx1="40" />
+      <Connection Source="FB5.OUT" Destination="CNF" dx1="40" dx2="40" dy="1" />
+      <Connection Source="FB6.EO" Destination="FB3.REQ" dx1="40" />
+      <Connection Source="FB1.INITO" Destination="FB6.INIT" dx1="89.1875" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="pickup_voltage" Destination="FB1.pickup_voltage" dx1="44.54175" />
+      <Connection Source="voltage" Destination="FB1.voltage" dx1="48.93762" />
+      <Connection Source="FB4.OPERATE" Destination="FB5.in1" dx1="173.646" />
+      <Connection Source="FB3.OPERATE" Destination="FB5.in2" dx1="73.646" />
+      <Connection Source="FB5.out" Destination="trip" dx1="40" />
+      <Connection Source="time" Destination="FB6.time_in" dx1="40" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

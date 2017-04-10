@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="31A060D7EB90990A" Name="CommFromMatlab3" Comment="Extracted Composite Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="4" />
+  <VersionInfo Author="gulzha" Date="5/20/2016" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="FB21_REQ" Comment="Normal Execution Request">
+        <With Var="FB21_BYTE1" />
+      </Event>
+      <Event Name="INIT" Comment="Initialization Request" />
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="FB22_INITO" Comment="Initialization Confirm" />
+      <Event Name="FB22_CNF" Comment="Execution Confirmation">
+        <With Var="FB22_OutData" />
+      </Event>
+      <Event Name="CNF" Comment="Execution Confirmation">
+        <With Var="FB21_OutData" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="FB21_BYTE1" Type="BYTE" ArraySize="8" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="FB21_OutData" Type="LREAL" />
+      <VarDeclaration Name="FB22_OutData" Type="LREAL" />
+    </OutputVars>
+  </InterfaceList>
+  <FBNetwork>
+    <FB ID="2" Name="FB20" Type="NETIO_2031720274" x="840" y="3760" Namespace="Main">
+      <Attribute Name="Configuration.GenericFBType.InterfaceParams" Value="Runtime.IoCommon#I:=1;SD:BYTE[8];RD:BYTE[8]" />
+      <Parameter Name="QI" Value="TRUE" />
+      <Parameter Name="ENDPOINT" Value="UDP:127.0.0.1:14111" />
+    </FB>
+    <FB ID="3" Name="FB21" Type="Byte2DoubleArray" x="1860" y="2560" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <FB ID="4" Name="FB22" Type="Byte2DoubleArray" x="1880" y="3720" Namespace="Main">
+      <Parameter Name="QI" Value="TRUE" />
+    </FB>
+    <Input Name="FB21_REQ">
+      <Position>
+        <X>330</X>
+        <Y>657.963562</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Input Name="FB21_BYTE1">
+      <Position>
+        <X>295</X>
+        <Y>722.963562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Input>
+    <Input Name="INIT">
+      <Position>
+        <X>308.854156</X>
+        <Y>607.963562</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Input>
+    <Output Name="FB22_INITO">
+      <Position>
+        <X>634.401</X>
+        <Y>932.463562</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="FB22_CNF">
+      <Position>
+        <X>634.401</X>
+        <Y>947.463562</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <Output Name="FB21_OutData">
+      <Position>
+        <X>629.401</X>
+        <Y>722.463562</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Output>
+    <Output Name="FB22_OutData">
+      <Position>
+        <X>634.401</X>
+        <Y>1012.46356</Y>
+      </Position>
+      <IsType>Data</IsType>
+    </Output>
+    <Output Name="CNF">
+      <Position>
+        <X>677.9661</X>
+        <Y>647.963562</Y>
+      </Position>
+      <IsType>Event</IsType>
+    </Output>
+    <EventConnections>
+      <Connection Source="FB20.IND" Destination="FB20.ACK" dx1="40" dx2="30" dy="-228" />
+      <Connection Source="FB21.INITO" Destination="FB20.INIT" dx1="60" dx2="50" dy="892" />
+      <Connection Source="FB20.INITO" Destination="FB22.INIT" dx1="52.16675" />
+      <Connection Source="FB20.IND" Destination="FB22.REQ" dx1="72.16675" />
+      <Connection Source="FB21_REQ" Destination="FB21.REQ" dx1="46.71875" />
+      <Connection Source="FB22.INITO" Destination="FB22_INITO" />
+      <Connection Source="FB22.CNF" Destination="FB22_CNF" />
+      <Connection Source="FB21.CNF" Destination="CNF" dx1="72.396" />
+      <Connection Source="INIT" Destination="FB21.INIT" dx1="45.41675" />
+    </EventConnections>
+    <DataConnections>
+      <Connection Source="FB20.RD" Destination="FB22.BYTE1" dx1="92.16675" />
+      <Connection Source="FB21_BYTE1" Destination="FB21.BYTE1" dx1="48.05212" />
+      <Connection Source="FB21.OutData" Destination="FB21_OutData" />
+      <Connection Source="FB22.OutData" Destination="FB22_OutData" />
+    </DataConnections>
+  </FBNetwork>
+</FBType>

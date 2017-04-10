@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType Name="tripTest" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="7/4/2016" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="QI" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request">
+        <With Var="QI" />
+        <With Var="IN_Level1" />
+      </Event>
+      <Event Name="Trip">
+        <With Var="IN_Level2" />
+        <With Var="IN_Trip" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm">
+        <With Var="QO" />
+      </Event>
+      <Event Name="CNF" Comment="Execution Confirmation">
+        <With Var="QO" />
+        <With Var="OUT_Level" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="QI" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="IN_Level1" Type="REAL" />
+      <VarDeclaration Name="IN_Level2" Type="REAL" />
+      <VarDeclaration Name="IN_Trip" Type="BOOL" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="QO" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="OUT_Level" Type="REAL" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="904.9412" y="605.4117" />
+      <ECState Name="INIT" Comment="Initialization" x="923.5294" y="141.1765">
+        <ECAction Algorithm="INIT" Output="INITO" />
+      </ECState>
+      <ECState Name="REQ" Comment="Normal execution" x="653.647" y="1056.941">
+        <ECAction Algorithm="REQ" Output="CNF" />
+      </ECState>
+      <ECState Name="STATE1" x="1468" y="756">
+        <ECAction Algorithm="trip" Output="CNF" />
+      </ECState>
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="911.7334" y="401.2718">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="229,147,227.1306,58.29884" />
+      </ECTransition>
+      <ECTransition Source="INIT" Destination="START" Condition="1" x="1059.114" y="400.7953">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="297,95,249.4797,109.9812" />
+      </ECTransition>
+      <ECTransition Source="START" Destination="REQ" Condition="REQ" x="866.5474" y="862.4459">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="228.1196,203.8199,212.8482,232.6146" />
+      </ECTransition>
+      <ECTransition Source="REQ" Destination="START" Condition="1" x="763.6329" y="772.5522">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="183.9717,202.6348,199.1784,173.8707" />
+      </ECTransition>
+      <ECTransition Source="START" Destination="STATE1" Condition="Trip" x="1214.803" y="593.1498">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="289.5508,140.4742,317.0141,147.7847" />
+      </ECTransition>
+      <ECTransition Source="STATE1" Destination="START" Condition="1" x="1188.74" y="768.2378">
+        <Attribute Name="Configuration.Transaction.BezierPoints" Value="313.4936,199.5504,286.6973,192.55" />
+      </ECTransition>
+    </ECC>
+    <Algorithm Name="INIT" Comment="Initialization algorithm">
+      <ST Text=";" />
+    </Algorithm>
+    <Algorithm Name="REQ" Comment="Normally executed algorithm">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;OUT_Level:=IN_Level1;" />
+    </Algorithm>
+    <Algorithm Name="trip">
+      <ST Text=";&#xD;&#xA;IF (IN_Trip) THEN&#xD;&#xA;	OUT_Level:=IN_Level2;&#xD;&#xA;END_IF;" />
+    </Algorithm>
+  </BasicFB>
+</FBType>

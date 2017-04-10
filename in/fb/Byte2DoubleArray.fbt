@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE FBType SYSTEM "../LibraryElement.dtd">
+<FBType GUID="BC5855CCF67DE63D" Name="Byte2DoubleArray" Comment="Basic Function Block Type" Namespace="Main">
+  <Attribute Name="Configuration.FB.IDCounter" Value="0" />
+  <Identification Standard="61499-2" />
+  <VersionInfo Organization="nxtControl GmbH" Version="0.0" Author="gulzha" Date="12/6/2015" Remarks="Template" />
+  <InterfaceList>
+    <EventInputs>
+      <Event Name="INIT" Comment="Initialization Request">
+        <With Var="QI" />
+      </Event>
+      <Event Name="REQ" Comment="Normal Execution Request">
+        <With Var="QI" />
+        <With Var="BYTE1" />
+      </Event>
+    </EventInputs>
+    <EventOutputs>
+      <Event Name="INITO" Comment="Initialization Confirm">
+        <With Var="QO" />
+      </Event>
+      <Event Name="CNF" Comment="Execution Confirmation">
+        <With Var="QO" />
+        <With Var="OutData" />
+        <With Var="BYTE0" />
+        <With Var="BYTE1_1" />
+        <With Var="BYTE2" />
+        <With Var="BYTE3" />
+        <With Var="BYTE4" />
+        <With Var="BYTE5" />
+        <With Var="BYTE6" />
+        <With Var="BYTE7" />
+      </Event>
+    </EventOutputs>
+    <InputVars>
+      <VarDeclaration Name="QI" Type="BOOL" Comment="Input event qualifier" />
+      <VarDeclaration Name="BYTE1" Type="BYTE" ArraySize="8" />
+    </InputVars>
+    <OutputVars>
+      <VarDeclaration Name="QO" Type="BOOL" Comment="Output event qualifier" />
+      <VarDeclaration Name="OutData" Type="LREAL" />
+      <VarDeclaration Name="BYTE0" Type="BYTE" />
+      <VarDeclaration Name="BYTE1_1" Type="BYTE" />
+      <VarDeclaration Name="BYTE2" Type="BYTE" />
+      <VarDeclaration Name="BYTE3" Type="BYTE" />
+      <VarDeclaration Name="BYTE4" Type="BYTE" />
+      <VarDeclaration Name="BYTE5" Type="BYTE" />
+      <VarDeclaration Name="BYTE6" Type="BYTE" />
+      <VarDeclaration Name="BYTE7" Type="BYTE" />
+    </OutputVars>
+  </InterfaceList>
+  <BasicFB>
+    <InternalVars>
+      <VarDeclaration Name="temp" Type="LWORD" />
+      <VarDeclaration Name="i" Type="INT" />
+      <VarDeclaration Name="tempByte" Type="BYTE" />
+    </InternalVars>
+    <ECC>
+      <ECState Name="START" Comment="Initial State" x="552.9412" y="429.4117" />
+      <ECState Name="INIT" Comment="Initialization" x="923.5294" y="141.1765">
+        <ECAction Algorithm="INIT" Output="INITO" />
+      </ECState>
+      <ECState Name="REQ" Comment="Normal execution" x="217.647" y="752.9412">
+        <ECAction Algorithm="REQ" />
+        <ECAction Algorithm="temp" Output="CNF" />
+      </ECState>
+      <ECTransition Source="START" Destination="INIT" Condition="INIT" x="731.1476" y="204.8375" />
+      <ECTransition Source="INIT" Destination="START" Condition="1" x="797.5924" y="348.3232" />
+      <ECTransition Source="START" Destination="REQ" Condition="REQ" x="447.8488" y="648.3352" />
+      <ECTransition Source="REQ" Destination="START" Condition="1" x="372.8767" y="512.7991" />
+    </ECC>
+    <Algorithm Name="INIT" Comment="Initialization algorithm">
+      <ST Text=";" />
+    </Algorithm>
+    <Algorithm Name="REQ" Comment="Normally executed algorithm">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;temp := 0;&#xD;&#xA;//4bytesData := (SHL(SHL(SHL(BYTE_TO_DWORD(in1), 8) OR BYTE_TO_DWORD(in2), 8) OR     BYTE_TO_DWORD(in3), 8) OR in4);&#xD;&#xA;&#xD;&#xA;//temp:= BYTE_TO_LREAL(Inputarray[0])&#xD;&#xA;(*temp:= (SHL((temp OR BYTE1[0]),56) OR SHL((temp OR BYTE1[1]),48) OR &#xD;&#xA;        SHL((temp OR BYTE1[2]),40) OR SHL((temp OR BYTE1[3]),32) OR&#xD;&#xA;        SHL((temp OR BYTE1[4]),24) OR SHL((temp OR BYTE1[5]),16) OR&#xD;&#xA;        SHL((temp OR BYTE1[6]),8) OR (temp OR BYTE1[7]));*)&#xD;&#xA;temp := temp OR BYTE1[7];&#xD;&#xA;temp:=  SHL(temp,8);&#xD;&#xA;temp := temp OR BYTE1[6];&#xD;&#xA;temp:=  SHL(temp,8);&#xD;&#xA;temp := temp OR BYTE1[5];&#xD;&#xA;temp:=  SHL(temp,8);&#xD;&#xA;temp := temp OR BYTE1[4];&#xD;&#xA;temp:=  SHL(temp,8);&#xD;&#xA;temp := temp OR BYTE1[3];&#xD;&#xA;temp:=  SHL(temp,8);&#xD;&#xA;temp := temp OR BYTE1[2];&#xD;&#xA;temp:=  SHL(temp,8);&#xD;&#xA;temp := temp OR BYTE1[1];&#xD;&#xA;temp:=  SHL(temp,8);&#xD;&#xA;temp := temp OR BYTE1[0];&#xD;&#xA;&#xD;&#xA;OutData:=DWORD_TO_LREAL(temp);&#xD;&#xA;//OutData:= DWORD_TO_REAL(temp); //LREAL_TO_DWORD();&#xD;&#xA;&#xD;&#xA;" />
+    </Algorithm>
+    <Algorithm Name="temp">
+      <ST Text=";&#xD;&#xA;&#xD;&#xA;BYTE0:=BYTE1[0];&#xD;&#xA;BYTE1_1:=BYTE1[1];&#xD;&#xA;BYTE2:=BYTE1[2];&#xD;&#xA;BYTE3:=BYTE1[3];&#xD;&#xA;BYTE4:=BYTE1[4];&#xD;&#xA;BYTE5:=BYTE1[5];&#xD;&#xA;BYTE6:=BYTE1[6];&#xD;&#xA;BYTE7:=BYTE1[7];" />
+    </Algorithm>
+  </BasicFB>
+</FBType>
