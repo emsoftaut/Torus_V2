@@ -10,7 +10,7 @@ import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.DepthFirstIterator;
 
-import algorithm.splicegeneration.*;
+import algorithms.*;
 import frameworks.ea_61850.HashSetMembershipMatcherMatcher;
 import frameworks.ea_61850.HashSetSubsetMatcher;
 import frameworks.ea_61850.REA_C61850Framework;

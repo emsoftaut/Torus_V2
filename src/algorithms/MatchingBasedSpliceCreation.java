@@ -1,4 +1,4 @@
-package algorithm.splicegeneration;
+package algorithms;
 
 import java.util.Collection;
 import java.util.Comparator;

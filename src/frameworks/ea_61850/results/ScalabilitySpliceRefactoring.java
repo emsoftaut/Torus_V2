@@ -17,7 +17,7 @@ import splice.Splice;
 import splice.SpliceEdge;
 import parsers.outputs.*;
 
-public class ScalabilitySpliceCreation {
+public class ScalabilitySpliceRefactoring {
 
 	private ScalabilityFramework reqCompFramework;
 	private int requirementProjectionsIndex;
@@ -31,7 +31,7 @@ public class ScalabilitySpliceCreation {
 	 * @param rIndex
 	 * @param cIndex
 	 */
-	public ScalabilitySpliceCreation(ScalabilityFramework reqCompFramework, int rIndex, int cIndex) {
+	public ScalabilitySpliceRefactoring(ScalabilityFramework reqCompFramework, int rIndex, int cIndex) {
 		this.reqCompFramework = reqCompFramework;
 		this.requirementProjectionsIndex = rIndex;
 		this.componentProjectionsIndex = cIndex;
@@ -161,123 +161,32 @@ public class ScalabilitySpliceCreation {
 		 * utilities.Paths.outputPath+"scalability_reqForest.gv");
 		 */
 
-		ScalabilitySpliceCreation tc = new ScalabilitySpliceCreation(caseStudyInformation, 0, 0);
-		
-
-		// 0: single splice for whole system
-		// 1: single splice per requirement
-		// 2: one splice per component
-		// 3: one splice per reqTree
-		// 4: req-req splices
-		// 5: all and then fuse
-		int choice = 0;
-
-		switch (choice) { 
-		case 0: // One splice for the whole system
-			long time = System.currentTimeMillis();
-			Splice singleSplice = tc.createSingleSplice();
-			time = System.currentTimeMillis() - time;
-			SpliceToGraphViz.exportSpliceToFile(singleSplice,
-					utilities.Paths.outputPath + "scalability_singleplice.gv");
-			System.out.println(
-					"Found vertices:edges" + singleSplice.vertexSet().size() + ":" + singleSplice.edgeSet().size());
-			System.out.println("It took "+(time)+" milliseconds or "+(time/1000.0)+" seconds");
-			break;
-
-		case 1: // one splice per requirement
-			HashSet<Splice> splices = tc.createSplicesOnePerRequirement();
-			int i = 0;
-			int numberOfVertices = 0;
-			int numberOfEdges = 0;
-			for (Splice splice : splices) {
-				SpliceToGraphViz.exportSpliceToFile(splice,
-						utilities.Paths.outputPath + "scalability_splCreateOnePerReq" + i + ".gv");
-				numberOfVertices += splice.vertexSet().size();
-				numberOfEdges += splice.edgeSet().size();
-				i++;
-			}
-			System.out.println("Found vertices:edges" + numberOfVertices + ":" + numberOfEdges);
-			break;
-		case 2: // one splice per component
-			splices = tc.createSplicesOnePerComponent();
-			i = 0;
-			numberOfVertices = 0;
-			numberOfEdges = 0;
-			for (Splice splice : splices) {
-				SpliceToGraphViz.exportSpliceToFile(splice,
-						utilities.Paths.outputPath + "scalability_splCreateOnePerComp" + i + ".gv");
-				numberOfVertices += splice.vertexSet().size();
-				numberOfEdges += splice.edgeSet().size();
-				i++;
-			}
-			System.out.println("Found vertices:edges" + numberOfVertices + ":" + numberOfEdges);
-			break;
-		case 3: // one splice per reqTree
-			splices = tc.createOneSplicePerRequirementsTree();
-			i = 0;
-			numberOfVertices = 0;
-			numberOfEdges = 0;
-			for (Splice splice : splices) {
-				SpliceToGraphViz.exportSpliceToFile(splice,
-						utilities.Paths.outputPath + "scalability_oneSplicePerRTree" + i + ".gv");
-				numberOfVertices += splice.vertexSet().size();
-				numberOfEdges += splice.edgeSet().size();
-				i++;
-			}
-			System.out.println("Found vertices:edges" + numberOfVertices + ":" + numberOfEdges);
-			break;
-
-		case 4: // create req-req splices
-			splices = tc.createReqToReqSplices();
-			i = 0;
-			numberOfVertices = 0;
-			numberOfEdges = 0;
-			for (Splice splice : splices) {
-				SpliceToGraphViz.exportSpliceToFile(splice,
-						utilities.Paths.outputPath + "scalability_reqtoreq" + i + ".gv");
-				numberOfVertices += splice.vertexSet().size();
-				numberOfEdges += splice.edgeSet().size();
-				i++;
-			}
-			System.out.println("Found vertices:edges" + numberOfVertices + ":" + numberOfEdges);
-			break;
-		case 5: // all and then fuse
-			HashSet<Splice> spliceSet = new HashSet<>();
-			spliceSet.add(tc.createSingleSplice());
-			spliceSet.addAll(tc.createSplicesOnePerRequirement());
-			spliceSet.addAll(tc.createSplicesOnePerComponent());
-			spliceSet.addAll(tc.createOneSplicePerRequirementsTree());
-			spliceSet.addAll(tc.createReqToReqSplices());
-			i = 0;
-			numberOfVertices = 0;
-			numberOfEdges = 0;
-			Splice finalSplice = new Splice();
-			for (Splice splice : spliceSet) {
-				Graphs.addGraph(finalSplice, splice);
-			}
-
-			// remove duplicate edges
-			HashSet<SpliceEdge> toRemove = new HashSet<>();
-			for (Object node : finalSplice.vertexSet()) {
-				HashSet<SpliceEdge> edgeSet = new HashSet<>();
-				for (SpliceEdge e : finalSplice.outgoingEdgesOf(node)) {
-					System.out.println("checking edge:" + e);
-					for (SpliceEdge e2 : edgeSet) {
-						if (e2.equals(e)) {
-							toRemove.add(e);
-							continue;
-						}
-					}
-					edgeSet.add(e);
-				}
-			}
-			finalSplice.removeAllEdges(toRemove);
-
-			SpliceToGraphViz.exportSpliceToFile(finalSplice, utilities.Paths.outputPath + "scalability_fused.gv");
-			System.out.println(
-					"Found vertices:edges" + finalSplice.vertexSet().size() + ":" + finalSplice.edgeSet().size());
-			break;
+		ScalabilitySpliceRefactoring tc = new ScalabilitySpliceRefactoring(caseStudyInformation, 0, 0);
+		//first create one splice per requirement
+		HashSet<Splice> splices = tc.createSplicesOnePerRequirement();
+		HashSet<HashSet<Object>> partitions = createComponentParitions(caseStudyInformation);
+		long time = System.currentTimeMillis();
+		HashSet<Splice> spliceset2 = SpliceRefactoring.refactor(splices, partitions);
+		time = System.currentTimeMillis() - time;
+		int numberOfVertices = 0;
+		int numberOfEdges = 0;
+		for (Splice splice : spliceset2) {
+			numberOfVertices += splice.vertexSet().size();
+			numberOfEdges += splice.edgeSet().size();
 		}
+		System.out.println("Found vertices:edges" + numberOfVertices + ":" + numberOfEdges);
+		System.out.println("It took "+(time)+" milliseconds or "+(time/1000.0)+" seconds");			
+		
+	}
+
+	private static HashSet<HashSet<Object>> createComponentParitions(ScalabilityFramework framework) {
+		HashSet<HashSet<Object>> retSet = new HashSet<>();
+		for(Object component: framework.myComponentFramework.getComponentTree().vertexSet()) {
+			HashSet<Object> newSet = new HashSet<>();
+			newSet.add(component);
+			retSet.add(newSet);
+		}
+		return retSet;
 	}
 
 }
